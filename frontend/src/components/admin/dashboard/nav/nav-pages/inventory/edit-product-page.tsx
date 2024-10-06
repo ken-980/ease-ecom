@@ -91,22 +91,10 @@ export const  EditProduct = () => {
 				formData.append("delete-link", jsonUrl)
 			}
 
-
-			console.log(adminId)
-
 			submit(formData, {method:"post", action : `/admin/${adminId}/edit/${productId}`});
-
-
-			//formData to service
-			//react-router useSubmit not working
-			//await axiosReqUserData(formData);
-
 		}else{
 			setInputMissingError("Input missing");
 		}
-
-
-		// setInputMissingError(axios_req);
 		
 		//end loading state
         setLoading(false);
@@ -126,19 +114,19 @@ export const  EditProduct = () => {
 
                         <label htmlFor="product-name ">
                             <span className="block text-sm font-thin text-slate-800 font-plus-font"> Product name </span>
-                            <input className="border focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200 w-64" ref={productNameInputRef} type="text" name="productName" value={productDetail.productName} id="product-name" required/>
+                            <input className="border focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200 w-64" ref={productNameInputRef} type="text" name="productName" defaultValue={productDetail.productName} id="product-name" required/>
                         </label>
 
                         <label htmlFor="product-price">
                             <span className="block text-sm font-thin text-slate-800 font-plus-font"> Product price (Ghc)</span>
-                            <input className="border focus:outline-none p-2 focus:border-sky-700 font-plus-font text-sm text-gray-600 bg-gray-200 w-64"    pattern="[0-9]*[.,]?[0-9]*"  ref={productPriceInputRef} value={productDetail.productPrice} type="number" name="productPrice" id="product-price" required/>
+                            <input className="border focus:outline-none p-2 focus:border-sky-700 font-plus-font text-sm text-gray-600 bg-gray-200 w-64"    pattern="[0-9]*[.,]?[0-9]*"  ref={productPriceInputRef} defaultValue={productDetail.productPrice} type="number" name="productPrice" id="product-price" required/>
                         </label>
                     </div>
 
                     <div className="flex space-x-4 m-1 items-center ">
                         <label htmlFor="product-type">
                             <span className="block text-sm font-thin text-slate-800 font-plus-font">Product type</span>
-                            <select className="w-full p-2 bg-gray-200 outline-none font-plus-font" value={productDetail.productType} name="productType" required ref={productTypeInputRef} id="product-type">
+                            <select className="w-full p-2 bg-gray-200 outline-none font-plus-font" defaultValue={productDetail.productType} name="productType" required ref={productTypeInputRef} id="product-type">
                                 <option value="Cologne">Cologne</option>
                                 <option value="Eau de tollette">Eau de tollette</option>
                                 <option value="Eau de perfume">Eau de perfume</option>
@@ -148,7 +136,7 @@ export const  EditProduct = () => {
 
                         <label htmlFor="product-gender">
                             <span className="block text-sm font-thin text-slate-800 font-plus-font">Gender</span>
-                            <select className="w-full p-2 bg-gray-200 outline-none border-none font-plus-font" name="gender" value={productDetail.productGenderUse}  id="product-gender" ref={productGenderUse}>
+                            <select className="w-full p-2 bg-gray-200 outline-none border-none font-plus-font" name="gender" defaultValue={productDetail.productGenderUse}  id="product-gender" ref={productGenderUse}>
                                 <option value="male">Male</option>
                                 <option value="femal">Female</option>
                             </select>
@@ -157,7 +145,7 @@ export const  EditProduct = () => {
 
                         <label htmlFor="product-quantity">
                             <span className="block text-sm font-thin text-slate-800 font-plus-font">Quantiy</span>
-                            <input  value={productDetail.productQuantity} type="number" id="product-quantity" name="product_quantity" className="border focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200"ref={productProductQuantity} />
+                            <input  defaultValue={productDetail.productQuantity} type="number" id="product-quantity" name="product_quantity" className="border focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200"ref={productProductQuantity} />
                         </label>
                         
                         <input type="text"  ref={productAdminRef} name="admin_id" readOnly value={adminId} hidden    />
@@ -176,7 +164,6 @@ export const  EditProduct = () => {
                 </Form>
 
             </div>
-
 
 
 			{/* images */}

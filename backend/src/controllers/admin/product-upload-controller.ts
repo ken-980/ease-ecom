@@ -54,7 +54,7 @@ const productUploadController = async (req: Request, res: Response) => {
 
 
     } catch (error) {
-        console.log(error)
+        console.log(`error in product upload controller => ${error}`)
         return res.status(500).send({ message: "Sever error", success: false });
     }
 }

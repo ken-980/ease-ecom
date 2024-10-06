@@ -29,7 +29,6 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
             return new Promise((resolve, reject) => {
 
                 cloudinary.uploader.upload_stream({ folder: `product-images/${productName.toLowerCase()}` }, (error, result) => {
-
                     if (error) {
                         reject(new Error(error.message));
                     }
@@ -40,8 +39,10 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
         }
     });
 
-    const fileUrls: ImageUrls[] = [];
 
+
+    //image links array 
+    const fileUrls: ImageUrls[] = [];
 
     const urlArray = Promise.all(urls).then((result) => {
         if (typeof result === 'object') {
@@ -52,6 +53,8 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
             });
         }
         return fileUrls;
+
+
     }).catch((err) => {
 
         console.log(err)

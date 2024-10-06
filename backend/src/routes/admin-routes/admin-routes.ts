@@ -12,6 +12,7 @@ import multer from "multer";
 import { recentProductController } from "../../controllers/admin/inventory-page-controller";
 import { deleteRecordController } from "../../controllers/admin/delete-record-controller";
 import { productInfoController } from "../../controllers/admin/product-info-controller";
+import { editProductCrontroller } from "../../controllers/admin/edit-product-controller";
 
 const memorystorage = multer.memoryStorage();
 const upload = multer({ storage: memorystorage })
@@ -38,6 +39,7 @@ adminRoutes.get("/adminData/:adminId", (req: Request, res: Response) => adminDet
 //product upload
 adminRoutes.post("/product-upload", upload.array("product-images", 10), (req: Request, res: Response) => productUploadController(req, res));
 
+
 //inventory page loader
 //page items
 adminRoutes.get("/recent/:productNumber", (req: Request, res: Response) => recentProductController(req, res));
@@ -47,5 +49,7 @@ adminRoutes.get("/recent/:productNumber", (req: Request, res: Response) => recen
 adminRoutes.get("/product/:productId", (req: Request, res: Response) => productInfoController(req, res));
 
 //edit-product
+adminRoutes.post("/edit-product", upload.array("product-images", 10), (req: Request, res: Response) => editProductCrontroller(req, res));
+
 
 export default adminRoutes;
