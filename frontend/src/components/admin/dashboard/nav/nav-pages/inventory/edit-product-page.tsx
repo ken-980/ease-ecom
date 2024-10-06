@@ -34,7 +34,7 @@ export const  EditProduct = () => {
     const images = productImages.map((url, index) => 
         <div className={`p-2 m-2`}  key={index}>
 			<input type="checkbox" value={url} className={`checked:bg-red-500`} onChange={selectHandler} name={url}  />
-			<img className="size-28" src={url} alt="no-photo(s)" />
+			<img className="size-28" src={url} alt="no-photo(s)"  loading="lazy"/>
         </div>
     )
 
@@ -75,8 +75,7 @@ export const  EditProduct = () => {
             productGenderUse.current?.value && 
             productPriceInputRef.current?.value && 
             productProductQuantity.current?.value && 
-            productTypeInputRef.current?.value
-			
+            productTypeInputRef.current?.value	
         ){
 			formData.append("productName", productNameInputRef.current.value);
 			formData.append("productPrice", productPriceInputRef.current.value);
@@ -86,11 +85,13 @@ export const  EditProduct = () => {
             formData.append("adminId", productAdminRef.current.value);
 			
 
-			if(imageUrls.length !==0 ){
+			if(imageUrls.length !== 0){
 				const imagesToDelete = imageUrls.map((url) => ({ url }) )
 				const jsonUrl = JSON.stringify(imagesToDelete)
 				formData.append("delete-link", jsonUrl)
 			}
+
+
 			console.log(adminId)
 
 			submit(formData, {method:"post", action : `/admin/${adminId}/edit/${productId}`});
@@ -122,6 +123,7 @@ export const  EditProduct = () => {
                 <Form className="p-2 space-y-8" method="post" encType="multipart/form-data" onSubmit={handleFormSubmission}>
 
                     <div className="flex space-x-4 m-1">
+
                         <label htmlFor="product-name ">
                             <span className="block text-sm font-thin text-slate-800 font-plus-font"> Product name </span>
                             <input className="border focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200 w-64" ref={productNameInputRef} type="text" name="productName" value={productDetail.productName} id="product-name" required/>
@@ -157,12 +159,11 @@ export const  EditProduct = () => {
                             <span className="block text-sm font-thin text-slate-800 font-plus-font">Quantiy</span>
                             <input  value={productDetail.productQuantity} type="number" id="product-quantity" name="product_quantity" className="border focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200"ref={productProductQuantity} />
                         </label>
-
+                        
                         <input type="text"  ref={productAdminRef} name="admin_id" readOnly value={adminId} hidden    />
                     </div>
 
                     <div>
-
                         <label htmlFor="product-image">
                             <span className="block text-sm font-thin text-slate-800 font-plus-font">Add product images</span>
                             <input ref={fileInputRef} type="file" id="product-image" multiple name="product-images" max={4} className=" w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 font-plus-font" accept="image/*" required/>
@@ -182,7 +183,6 @@ export const  EditProduct = () => {
 			<div  className="flex flex-wrap">
 				{images}
 			</div>
-
         </div>
     )
 }
