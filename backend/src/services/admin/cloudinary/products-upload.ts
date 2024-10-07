@@ -1,9 +1,14 @@
-import { v2 as cloudinary, UploadApiResponse } from "cloudinary"
+import { v2 as cloudinary } from "cloudinary"
 import { ImageUrls } from "../../../types/types";
+
+
+
+
 const cloudName = process.env.CLOUD_NAME as string;
 const apiKey = process.env.API_KEY as string;
 const apiSecret = process.env.API_SECRET as string;
 
+//config here for type reason
 cloudinary.config({
     cloud_name: cloudName,
     api_key: apiKey,
@@ -11,14 +16,11 @@ cloudinary.config({
 })
 
 
-
-/**
- * 
+/** 
  * @param files files buffer
  * @param productName product name
  * @returns Promise
  */
-
 
 
 export const productUpLoaderService = async (files: Buffer[], productName: string): Promise<ImageUrls[] | void | null> => {
@@ -28,17 +30,18 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
         if (file) {
             return new Promise((resolve, reject) => {
 
+                //file path
                 cloudinary.uploader.upload_stream({ folder: `product-images/${productName.toLowerCase()}` }, (error, result) => {
                     if (error) {
                         reject(new Error(error.message));
                     }
+
                     resolve(result?.secure_url);
 
                 }).end(file);
             })
         }
     });
-
 
 
     //image links array 
@@ -53,11 +56,9 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
             });
         }
         return fileUrls;
-
-
     }).catch((err) => {
 
-        console.log(err)
+        console.log(`Error in upload service => ${err}`);
 
         return null;
     });

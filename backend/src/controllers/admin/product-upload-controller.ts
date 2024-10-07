@@ -1,11 +1,12 @@
 import { Request, Response } from "express"
-import { productUpLoaderService } from "../../services/admin/uploads/products-upload";
+import { productUpLoaderService } from "../../services/admin/cloudinary/products-upload";
 import { productDetails } from "../../types/types";
-import { productDetailsServeSaveDb } from '../../services/db/admin/product-details';
+import { productDetailsServeSaveDb } from '../../services/db/admin/product-details-service';
 
 const productUploadController = async (req: Request, res: Response) => {
 
     try {
+
         //upload files here
         if (!req.files) {
             //bad request
@@ -14,11 +15,13 @@ const productUploadController = async (req: Request, res: Response) => {
 
         if (Array.isArray(req.files)) {
             const reqFilesLength = req.files.length
-            const fileArray = Array.from<Buffer>({ length: reqFilesLength })
 
+            const filesArray = Array.from<Buffer>({ length: reqFilesLength })
+
+            //get file buffer
             req.files.forEach((file) => {
                 if (file) {
-                    fileArray.push(file.buffer)
+                    filesArray.push(file.buffer)
                 }
             })
 
@@ -30,24 +33,25 @@ const productUploadController = async (req: Request, res: Response) => {
             }
 
             let productNameCon = "";
-            //concatenating the strings
+            //concatenate the product name if space separated
             if (productName.includes(" ")) {
-
                 for (const t of productName.split(" ")) {
                     productNameCon += t;
                 }
             }
 
-            const urlsObjects = await productUpLoaderService(fileArray, productNameCon);
+            //file buffer to upload service
+            const urlsObjects = await productUpLoaderService(filesArray, productNameCon);
 
             if (!urlsObjects) {
                 return res.status(500).send({ success: false, message: "Error uploading images" });
             }
 
-            //pass val and body to service
+            //product details object from request body
             const reqBodyProductDetails: productDetails = { product_name: productName, product_type: productType, product_gender_use: productGenderUse, product_price: productPrice, product_quantity: productQuantity, admin_id: adminId }
 
-            const prod = productDetailsServeSaveDb(urlsObjects, reqBodyProductDetails)
+            //save product details to database
+            productDetailsServeSaveDb(urlsObjects, reqBodyProductDetails)
 
         }
         return res.status(401).send({ message: "Sever error", success: false });

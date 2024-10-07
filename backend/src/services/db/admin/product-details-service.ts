@@ -1,14 +1,15 @@
 import { ImageUrls, productDetails } from "../../../types/types";
 import { prismaClientInstance } from '../../../db/prismaClient';
 
-
+//save product details to database
 export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], product: productDetails) => {
+
     const prisma = prismaClientInstance;
 
     try {
         const productFilePathsJson = JSON.stringify(imagesUrl)
 
-        const data = await prisma.productInfo.create({
+        await prisma.productInfo.create({
             data: {
                 productName: product.product_name.toString(),
                 productPrice: product.product_price.toString(),
