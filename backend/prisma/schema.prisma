@@ -13,28 +13,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Admin {
-  id  Int  @id @default(autoincrement())
-  userName String @unique
-  password String
+  id        Int      @id @default(autoincrement())
+  userName  String   @unique
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
   ProductInfo ProductInfo[]
 }
 
-
+//ProductInfo table relates 1:1 Admin
+//ProductInfo table relates 1:1 ProductPublicId
 model ProductInfo {
-  id Int @id @default(autoincrement())
-  productName String
-  productType String
+  id               Int             @id @default(autoincrement())
+  productName      String
+  productType      String
   productGenderUse String
-  productPrice String
-  productFilePath String
-  productQuantity Int
-  admin Admin @relation(fields: [adminUsername], references: [userName])
-  adminUsername String 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  productPrice     String
+  productFilePath  String
+  productQuantity  Int
+  admin            Admin           @relation(fields: [adminUsername], references: [userName])
+  adminUsername    String
+  imagePublicId      Int        @unique
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @default(now())
+}
+
+model ProductPublicId {
+  id          Int          @id @default(autoincrement())
+  publicId    String          @unique
 }

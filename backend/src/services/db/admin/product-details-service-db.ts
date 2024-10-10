@@ -1,15 +1,22 @@
-import { ImageUrls, productDetails } from "../../../types/types";
+import { ImageUrls, productDetails, ImagePublicIds } from "../../../types/types";
 import { prismaClientInstance } from '../../../db/prismaClient';
 
 //save product details to database
-export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], product: productDetails) => {
+export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], url: number, product: productDetails) => {
 
     const prisma = prismaClientInstance;
 
+
+
     try {
         const productFilePathsJson = JSON.stringify(imagesUrl)
+        const publicIdJson = JSON.stringify(url);
 
-        await prisma.productInfo.create({
+
+        //ProductInfo table relates 1:1 Admin
+        //ProductInfo table relates 1:1 ProductPublicId
+
+        const d = await prisma.productInfo.create({
             data: {
                 productName: product.product_name.toString(),
                 productPrice: product.product_price.toString(),
@@ -21,11 +28,14 @@ export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], product:
                     connect: {
                         userName: product.admin_id.toString()
                     }
-                }
+                },
+                imagePublicId: url
             }
         })
         //return response
-        return null;
+        if (d) {
+            return true
+        }
     } catch (error) {
         console.log(error, typeof error);
 

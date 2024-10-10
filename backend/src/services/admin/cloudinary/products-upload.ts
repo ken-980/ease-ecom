@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from "cloudinary"
 import { ImageUrls } from "../../../types/types";
+import { url } from "inspector";
+import { logger } from "../../../../logger";
 
 
 
@@ -15,6 +17,10 @@ cloudinary.config({
     api_secret: apiSecret
 })
 
+interface LinkData {
+    url: string
+    public_id: string
+}
 
 /** 
  * @param files files buffer
@@ -36,7 +42,7 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
                         reject(new Error(error.message));
                     }
 
-                    resolve(result?.secure_url);
+                    resolve({ url: result?.secure_url, public_id: result?.public_id });
 
                 }).end(file);
             })
@@ -44,25 +50,29 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
     });
 
 
-    //image links array 
-    const fileUrls: ImageUrls[] = [];
+
 
     const urlArray = Promise.all(urls).then((result) => {
-        if (typeof result === 'object') {
-            result.map((url) => {
-                if (typeof url === "string") {
-                    fileUrls.push({ imageUrl: url });
+
+        //image links array 
+        const fileUrls: ImageUrls[] = [];
+
+        //image public_id and url
+        if (typeof result === "object") {
+            result.map((data) => {
+                if (typeof data === "object") {
+                    const r = data as ImageUrls;
+                    fileUrls.push({ public_id: r.public_id, url: r.url })
                 }
-            });
+            })
         }
         return fileUrls;
     }).catch((err) => {
-
-        console.log(`Error in upload service => ${err}`);
-
+        logger.log({ level: "error", message: `in upload service: ${err}` })
         return null;
     });
 
     return await urlArray;
+    //return null;
 }
 

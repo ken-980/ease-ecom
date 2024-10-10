@@ -1,5 +1,6 @@
 export interface ImageUrls {
-    imageUrl?: string
+    url?: string,
+    public_id?: string
 }
 
 export interface productDetails {
@@ -10,3 +11,8 @@ export interface productDetails {
     admin_id: string
     product_quantity: string
 }
+
+//image public urls
+export interface ImagePublicIds {
+    public_id?: string
+} 
