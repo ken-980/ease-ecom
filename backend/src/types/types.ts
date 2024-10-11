@@ -1,6 +1,5 @@
 export interface ImageUrls {
-    url?: string,
-    public_id?: string
+    imageUrl?: string,
 }
 
 export interface productDetails {

@@ -2,7 +2,7 @@ import { ImageUrls, productDetails, ImagePublicIds } from "../../../types/types"
 import { prismaClientInstance } from '../../../db/prismaClient';
 
 //save product details to database
-export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], url: number, product: productDetails) => {
+export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], product: productDetails) => {
 
     const prisma = prismaClientInstance;
 
@@ -10,7 +10,6 @@ export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], url: num
 
     try {
         const productFilePathsJson = JSON.stringify(imagesUrl)
-        const publicIdJson = JSON.stringify(url);
 
 
         //ProductInfo table relates 1:1 Admin
@@ -29,7 +28,7 @@ export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], url: num
                         userName: product.admin_id.toString()
                     }
                 },
-                imagePublicId: url
+
             }
         })
         //return response

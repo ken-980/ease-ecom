@@ -1,9 +1,8 @@
 import { Request, Response } from "express"
 import { productUpLoaderService } from "../../services/admin/cloudinary/products-upload";
-import { ImagePublicIds, productDetails, ImageUrls } from "../../types/types";
+import { productDetails } from "../../types/types";
 import { productDetailsServeSaveDb } from '../../services/db/admin/product-details-service-db';
 import { logger } from "../../../logger";
-import { productPublicId } from "../../services/db/admin/product-public-id-db";
 
 const productUploadController = async (req: Request, res: Response) => {
 
@@ -52,38 +51,16 @@ const productUploadController = async (req: Request, res: Response) => {
             //product details object from request body
             const reqBodyProductDetails: productDetails = { product_name: productName, product_type: productType, product_gender_use: productGenderUse, product_price: productPrice, product_quantity: productQuantity, admin_id: adminId }
 
-
-            const imagePublicId: ImagePublicIds[] = [];
-
-            if (typeof urlsObjects === "object") {
-                urlsObjects.map((data) => {
-                    if (typeof data === "object") {
-                        const r = data as ImageUrls;
-
-                        imagePublicId.push({ public_id: r?.public_id })
-                    }
-                })
-            }
-
-            const public_id = await productPublicId(imagePublicId);
-            const public_Array: ImagePublicIds[] = [];
-
-
-            let dataSaved;
-            if (typeof public_id === 'number') {
-                dataSaved = await productDetailsServeSaveDb(urlsObjects, public_id, reqBodyProductDetails)
-            }
             //save product details to database
+            const dataSaved = await productDetailsServeSaveDb(urlsObjects, reqBodyProductDetails)
+
+            //successful data saved 
             if (dataSaved) {
-                //successful data saved 
                 return res.status(200).send({ message: "Data saved", success: true });
             }
 
-            return res.status(200).send({ message: "Data saved", success: true });
-
         }
         return res.status(401).send({ message: "Sever error", success: false });
-
 
     } catch (error) {
         logger.log({ level: "error", message: `Error in upload service: ${error}` })

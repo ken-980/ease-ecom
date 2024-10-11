@@ -1,9 +1,6 @@
 import { v2 as cloudinary } from "cloudinary"
-import { ImageUrls } from "../../../types/types";
-import { url } from "inspector";
+import { ImageUrls } from '../../../types/types';
 import { logger } from "../../../../logger";
-
-
 
 
 const cloudName = process.env.CLOUD_NAME as string;
@@ -17,10 +14,6 @@ cloudinary.config({
     api_secret: apiSecret
 })
 
-interface LinkData {
-    url: string
-    public_id: string
-}
 
 /** 
  * @param files files buffer
@@ -42,27 +35,24 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
                         reject(new Error(error.message));
                     }
 
-                    resolve({ url: result?.secure_url, public_id: result?.public_id });
+                    resolve({ imageUrl: result?.secure_url });
 
                 }).end(file);
             })
         }
     });
 
-
-
-
     const urlArray = Promise.all(urls).then((result) => {
 
         //image links array 
         const fileUrls: ImageUrls[] = [];
 
-        //image public_id and url
+        //image 
         if (typeof result === "object") {
-            result.map((data) => {
-                if (typeof data === "object") {
-                    const r = data as ImageUrls;
-                    fileUrls.push({ public_id: r.public_id, url: r.url })
+            result.map((url) => {
+                if (url) {
+                    const d = url as ImageUrls;
+                    fileUrls.push({ imageUrl: d.imageUrl })
                 }
             })
         }
@@ -73,6 +63,5 @@ export const productUpLoaderService = async (files: Buffer[], productName: strin
     });
 
     return await urlArray;
-    //return null;
 }
 
