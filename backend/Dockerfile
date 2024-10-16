@@ -4,6 +4,8 @@ ARG NODE_VERSION=22.2.0
 
 FROM node:22-bullseye-slim
 
+RUN corepack enable
+
 RUN yarn set version 4.2.2
 
 WORKDIR /usr/src/app

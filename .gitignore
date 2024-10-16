@@ -2,61 +2,40 @@ docker
 
 # Logs
 #frontend
-/frontend/logs
-/frontend/*.log
-/frontend/npm-debug.log*
-/frontend/yarn-debug.log*
-/frontend/yarn-error.log*
-/frontend/pnpm-debug.log*
-/frontend/lerna-debug.log*
-/frontend/.yarn/*
+/**/logs
+/**/*.log
+/**/*npm-debug.log*
+/**/*yarn-debug.log*
+/**/*yarn-error.log*
+/**/*pnpm-debug.log*
+/**/lerna-debug.log*
+/**/.yarn/*
 
-/frontend/node_modules
-/frontend/dist
-/frontend/dist-ssr
-/frontend/*.local
+/**/*node_modules
+/**/*dist
+/**/*dist-ssr
+/**/*.local
 
 # Editor directories and files
-/frontend/.vscode/
-/frontend/!.vscode/extensions.json
-/frontend/.idea
-/frontend/.DS_Store
-/frontend/.*.suo
-/frontend/*.ntvs*
-/frontend/*.njsproj
-/frontend/*.sln
-/frontend/*.sw?
-/frontend/secrets.ts
-/frontend/.env
-/frontend/public
+/**/*.vscode/
+/**/!.vscode/extensions.json
+/**/.idea
+/**/.DS_Store
+/**/.*.suo
+/**/*.ntvs*
+/**/*.njsproj
+/**/*.sln
+/**/*.sw?
+/**/secrets.ts
+/**/.env
+/**/public
 
 
+/**/to-do.txt
 
-#backend
-/backend/.vscode
-/backend/logs
-/backend/*.log
-/backend/npm-debug.log*
-/backend/yarn-debug.log*
-/backend/yarn-error.log*
-/backend/pnpm-debug.log*
-/backend/lerna-debug.log*
-/backend/node_modules
-/backend/dist
-/backend/to-do.txt
-
-/backend/.editorconfig
-/backend/.yarn/*
-/backend/!.yarn/patches
-/backend/!.yarn/plugins
-/backend/!.yarn/releases
-/backend/!.yarn/sdks
-/backend/!.yarn/versions
-/backend/.env
 
 # Swap the comments on the following lines if you wish to use zero-installs
 # In that case, don't forget to run `yarn config set enableGlobalCache false`!
 # Documentation here: https://yarnpkg.com/features/caching#zero-installs
 
 #!.yarn/cache
-/backend/.pnp.*

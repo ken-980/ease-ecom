@@ -6,6 +6,8 @@ ARG NODE_VERSION=22.2.0
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine
 
+RUN corepack enable
+
 RUN yarn set version 4.2.2
 
 WORKDIR /usr/src/app

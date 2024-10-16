@@ -15,8 +15,11 @@ mkdir docker && touch docker/password.txt
 
 ```bash
 # set env variables as in .env-example
-touch backend/.env
+touch backend/.env && touch frontend/.env.local
 cp backend/.env-example backend/.env
+cp frontend/.env-local-example frontedn/.env.local
+
+
 ```
 
 ```bash

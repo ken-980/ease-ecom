@@ -13,8 +13,7 @@
 **/.settings
 **/.toolstarget
 **/.vs
-**/backend/.vscode
-**/frontend/.vscode
+/**/*.vscode
 **/.next
 **/.cache
 **/*.*proj.user
@@ -24,13 +23,12 @@
 **/docker-compose*
 **/compose.y*ml
 **/Dockerfile*
-**/backend/node_modules
-**/frontend/node_modules
+/**/*node_modules
 **/npm-debug.log
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
-**/frontend/build
-**/backend/dist
+/**/build
+/**/dist
 LICENSE
 README.md
