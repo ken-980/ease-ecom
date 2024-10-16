@@ -32,9 +32,12 @@ export const  EditProduct = () => {
 
 	//images 
     const images = productImages.map((url, index) => 
-        <div className={`p-2 m-2`}  key={index}>
-			<input type="checkbox" value={url} className={`checked:bg-red-500`} onChange={selectHandler} name={url}  />
-			<img className="size-28" src={url} alt="no-photo(s)"  loading="lazy"/>
+        <div className={`p-2 m-2 `}  key={index}>
+            <div>
+				<input type="checkbox" value={url} className={`checked:bg-red-500`} onChange={selectHandler} name={url} />
+				<img className="size-28" src={url} alt="no-photo(s)"  loading="lazy"/>
+
+            </div>
         </div>
     )
 
@@ -66,7 +69,7 @@ export const  EditProduct = () => {
         
 		//populate the images array
         if (fileInputRef.current && fileInputRef.current.files) {
-            Array.from(fileInputRef.current.files).forEach((file) => formData.append("product-images", file));
+            Array.from(fileInputRef.current.files).forEach((file) => formData.append("newImages", file));
         }
 
 		if(
@@ -85,10 +88,11 @@ export const  EditProduct = () => {
             formData.append("adminId", productAdminRef.current.value);
 			
 
+            //image links to delete
 			if(imageUrls.length !== 0){
 				const imagesToDelete = imageUrls.map((url) => ({ url }) )
 				const jsonUrl = JSON.stringify(imagesToDelete)
-				formData.append("delete-link", jsonUrl)
+				formData.append("OldImagesToDelete", jsonUrl)
 			}
 
 			submit(formData, {method:"post", action : `/admin/${adminId}/edit/${productId}`});
@@ -167,7 +171,11 @@ export const  EditProduct = () => {
 
 
 			{/* images */}
-			<div  className="flex flex-wrap">
+			<div  className="flex flex-wrap flex-col ">
+                <div>
+                    <h2 className="text-red-500"> Images selected will be deleted </h2>
+                </div>
+
 				{images}
 			</div>
         </div>

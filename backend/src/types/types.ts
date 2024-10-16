@@ -14,4 +14,9 @@ export interface productDetails {
 //image public urls
 export interface ImagePublicIds {
     public_id?: string
-} 
+}
+
+//images to delete link type
+export interface ImagesType {
+    url: string
+}
