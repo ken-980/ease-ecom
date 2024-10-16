@@ -50,8 +50,8 @@ const signInController = async (req: Request, res: Response) => {
             res.cookie(cookieName, cookieToken, { maxAge: ms("1d"), httpOnly: true })
 
             if (!cookieToken) {
-                res.status(500).send({ message: "Sever error", success: false, data: {} });
-                return;
+
+                return res.status(500).send({ message: "Sever error", success: false, data: {} });
             }
 
             //sends response data if everything is successful
