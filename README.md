@@ -1,9 +1,9 @@
 # Ease
 
-An e-commerce web app that sends receipts to whatsapp by scanning a qr-code or entering your phone number
+An e-commerce web app
 
 ```bash
-git clone git@github.com:prosper980/ease.git
+git clone git@github.com:ken-980/ease-ecom.git
 ```
 
 ## Get it running ☻
@@ -16,6 +16,7 @@ mkdir docker && touch docker/password.txt
 ```bash
 # set env variables as in .env-example
 touch backend/.env
+cp backend/.env-example backend/.env
 ```
 
 ```bash
