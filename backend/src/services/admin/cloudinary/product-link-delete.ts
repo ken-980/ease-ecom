@@ -12,15 +12,19 @@ cloudinary.config({
     api_secret: apiSecret
 })
 
-export const deletImageLinksFromCloud = (links: string[]) => {
+export const deletImageLinksFromCloud = async (links: string[]) => {
 
-    cloudinary.api.delete_resources(links).then((res) => {
-        console.log(res)
+    const res = await cloudinary.api.delete_resources(links).then((res) => {
+        return res;
     }).catch((err) => {
         console.log(`Error in deleting links: ${err}`)
     })
 
-    return null;
+    if (res) {
+        return true;
+    }
+
+    return false;
 }
 
 

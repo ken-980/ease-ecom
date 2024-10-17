@@ -1,7 +1,9 @@
 import { Response, Request } from "express"
 import { ImagesType } from "../../types/types"
+import { imagePulbicIdExtractor } from "../../services/admin/public-id-extractor";
+import { deletImageLinksFromCloud } from "../../services/admin/cloudinary/product-link-delete";
 
-export const editProductCrontroller = (req: Request, res: Response) => {
+export const editProductCrontroller = async (req: Request, res: Response) => {
     const { OldImagesToDelete } = req.body;
 
 
@@ -12,7 +14,12 @@ export const editProductCrontroller = (req: Request, res: Response) => {
         links.push(link.url);
     })
 
-    console.log(links);
+    //if there images to be deleted
+    if (links.length !== 0) {
+        const imageIds = imagePulbicIdExtractor(links);
+
+        const del = await deletImageLinksFromCloud(imageIds);
+    }
 
 
     res.send("ok");

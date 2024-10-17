@@ -20,6 +20,7 @@ export interface ProductDbInfo {
     productQuantity: string
     updatedAt: string
     productType: string
+    productId?: number
 }
 
 export interface EditProductInfo {
