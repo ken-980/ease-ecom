@@ -14,8 +14,6 @@ export const eidtProductAction : ActionFunction = async ({ request }) => {
     try {
         
         const formData = await request.formData();
-
-        console.log(formData);
         
         //send product to edit details to backend
         const axios_req = await axiosInstance({
@@ -23,7 +21,11 @@ export const eidtProductAction : ActionFunction = async ({ request }) => {
             data :  formData,
             baseURL : `${baseUrl}`,
             url : "/admin/edit-product",
-            withCredentials : true
+            withCredentials : true,
+            headers : {
+                "Content-Type" : "multipart/form-data"
+            }
+
         })
 
         console.log(axios_req);

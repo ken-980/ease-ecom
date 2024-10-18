@@ -1,14 +1,17 @@
-import { useLoaderData,useParams,Form, useSubmit } from "react-router-dom"
+import { useLoaderData,useParams, useFetcher } from "react-router-dom"
 import { LoadAnimationCircle } from '../../../../../common/LoadAnimation';
 import { FormEvent, useRef, useState } from "react";
 import { EditProductInfo } from "../../../../../../types/products";
+import { axiosEditProductFomReq } from "../../../../../../services/product-edit-form-req";
+// import { axiosReqUserData } from "../../../../../../services/product-add-form-req";
 
 
 export const  EditProduct = () => {
 
     const { adminId } = useParams();
 	const { productId } = useParams()
-	const submit = useSubmit();
+        const fetcher = useFetcher();
+
 
     const  { productDetail, productImages } = useLoaderData() as EditProductInfo;
 
@@ -86,16 +89,19 @@ export const  EditProduct = () => {
 			formData.append("productGenderUse", productGenderUse.current.value);
 			formData.append("productQuantity", productProductQuantity.current.value);
             formData.append("adminId", productAdminRef.current.value);
+            (typeof productId === "string") ? formData.append("productId", productId) : null;
 			
 
             //image links to delete
 			if(imageUrls.length !== 0){
-				const imagesToDelete = imageUrls.map((url) => ({ url }) )
+				const imagesToDelete = imageUrls.map((url) => ({ url }))
 				const jsonUrl = JSON.stringify(imagesToDelete)
-				formData.append("OldImagesToDelete", jsonUrl)
+				formData.append("oldImagesToDelete", jsonUrl)
 			}
 
-			submit(formData, {method:"post", action : `/admin/${adminId}/edit/${productId}`});
+			//submit(formData, {method:"post", action : `/admin/${adminId}/edit/${productId}`});
+            const t = await axiosEditProductFomReq(formData);
+            console.log(t);
 		}else{
 			setInputMissingError("Input missing");
 		}
@@ -112,7 +118,7 @@ export const  EditProduct = () => {
 
 			{/* form  */}
             <div className="mt-4">
-                <Form className="p-2 space-y-8" method="post" encType="multipart/form-data" onSubmit={handleFormSubmission}>
+                <fetcher.Form className="p-2 space-y-8" method="post" encType="multipart/form-data" onSubmit={handleFormSubmission}>
 
                     <div className="flex space-x-4 m-1">
 
@@ -165,7 +171,7 @@ export const  EditProduct = () => {
                     <button className="text-gray-50 font-plus-font text-center px-4 py-2 bg-black" disabled={loading} type="submit"> { loading ? <LoadAnimationCircle /> : "Edit" }  </button>
 
                     <span className="text-sm text-red-500"> {inputMissingError}</span>
-                </Form>
+                </fetcher.Form>
 
             </div>
 
@@ -173,7 +179,7 @@ export const  EditProduct = () => {
 			{/* images */}
 			<div  className="flex flex-wrap flex-col ">
                 <div>
-                    <h2 className="text-red-500"> Images selected will be deleted </h2>
+                    <h2 className="text-red-500 font-bold"> Images selected will be deleted </h2>
                 </div>
 
 				{images}

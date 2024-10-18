@@ -49,7 +49,7 @@ adminRoutes.get("/recent/:productNumber", (req: Request, res: Response) => recen
 adminRoutes.get("/product/:productId", (req: Request, res: Response) => productInfoController(req, res));
 
 //edit-product
-adminRoutes.post("/edit-product", upload.array("product-images", 10), (req: Request, res: Response) => editProductCrontroller(req, res));
+adminRoutes.post("/edit-product", upload.array("newImages", 10), (req: Request, res: Response) => editProductCrontroller(req, res));
 
 
 export default adminRoutes;

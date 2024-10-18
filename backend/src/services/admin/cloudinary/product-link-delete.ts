@@ -12,7 +12,7 @@ cloudinary.config({
     api_secret: apiSecret
 })
 
-export const deletImageLinksFromCloud = async (links: string[]) => {
+const deletImageLinksFromCloud = async (links: string[]) => {
 
     const res = await cloudinary.api.delete_resources(links).then((res) => {
         return res;
@@ -27,7 +27,7 @@ export const deletImageLinksFromCloud = async (links: string[]) => {
     return false;
 }
 
-
+export default deletImageLinksFromCloud
 // cloudinary.v2.api
 //   .delete_resources(['product-images/test2/ppuxi0ihyvaveo0j5s5s', 'product-images/test2/d4t2lzeqooysduno9qqf'], 
 //     { type: 'upload', resource_type: 'image' })

@@ -7,7 +7,7 @@ export const AddProductForm = () => {
 
     const { adminId } = useParams();
 
-    const fecther = useFetcher();
+    const fetcher = useFetcher();
 
     const [loading, setLoading ] = useState(false);
 	const [inputMissingError, setInputMissingError] = useState(""); 
@@ -53,7 +53,7 @@ export const AddProductForm = () => {
     return (
 
         
-        <fecther.Form className="p-2 space-y-8" method="post" encType="multipart/form-data" onSubmit={handleFormSubmission}>
+        <fetcher.Form className="p-2 space-y-8" method="post" encType="multipart/form-data" onSubmit={handleFormSubmission}>
 
                 <div className="flex space-x-4 m-1">
                     <label htmlFor="product-name ">
@@ -107,6 +107,6 @@ export const AddProductForm = () => {
                 <button className="text-gray-50 font-plus-font text-center px-4 py-2 bg-black" disabled={loading} type="submit"> { loading ? <LoadAnimationCircle /> : "Add Product" }  </button>
 
 				<span className="text-sm text-red-500"> {inputMissingError}</span>
-        </fecther.Form>
+        </fetcher.Form>
     )
 }

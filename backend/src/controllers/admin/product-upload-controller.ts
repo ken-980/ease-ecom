@@ -5,7 +5,6 @@ import { productDetailsServeSaveDb } from '../../services/db/admin/product-detai
 import { logger } from "../../../logger";
 
 const productUploadController = async (req: Request, res: Response) => {
-
     try {
 
         //upload files here
@@ -60,6 +59,7 @@ const productUploadController = async (req: Request, res: Response) => {
             }
 
         }
+        //error occured
         return res.status(401).send({ message: "Sever error", success: false });
 
     } catch (error) {

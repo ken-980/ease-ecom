@@ -9,6 +9,7 @@ export interface productDetails {
     product_price: string
     admin_id: string
     product_quantity: string
+    productId?: number
 }
 
 //image public urls
