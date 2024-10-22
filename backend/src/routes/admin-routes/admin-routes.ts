@@ -51,5 +51,8 @@ adminRoutes.get("/product/:productId", (req: Request, res: Response) => productI
 //edit-product
 adminRoutes.post("/edit-product", upload.array("newImages", 10), (req: Request, res: Response) => editProductCrontroller(req, res));
 
+//dashboard home loader
+adminRoutes.get("/dashboarData", (req: Request, res: Response) => res.send("ok"))
+
 
 export default adminRoutes;
