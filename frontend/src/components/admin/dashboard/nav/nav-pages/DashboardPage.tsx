@@ -1,6 +1,6 @@
 import { NewOrders } from "./orders/NewOrders"
 import { Orders } from "./orders/Orders"
-import { AverageRevenue } from "./revenue/AverageRevenue"
+// import { AverageRevenue } from "./revenue/AverageRevenue"
 import { Revenue } from "./revenue/Revenue"
 import { Sales } from "./sales/Sales"
 
@@ -23,9 +23,9 @@ export const DashBoardPage = () => {
                     <Revenue />
                 </div>
                 
-                <div className="w-1/5">
+                {/* <div className="w-1/5">
                     <AverageRevenue />
-                </div>
+                </div> */}
             </div>
 
             <div>

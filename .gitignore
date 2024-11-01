@@ -30,6 +30,7 @@ docker
 /**/.env
 /**/public
 
+/**/notes.txt
 
 /**/to-do.txt
 

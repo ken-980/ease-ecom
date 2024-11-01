@@ -16,13 +16,11 @@ mkdir docker && touch docker/password.txt
 ```bash
 # set env variables as in .env-example
 touch backend/.env && touch frontend/.env.local
-cp backend/.env-example backend/.env
-cp frontend/.env-local-example frontedn/.env.local
-
-
+cp backend/.env-template backend/.env
+cp frontend/.env-local-template frontend/.env.local
 ```
 
 ```bash
 # docker run
-docker compose up
+docker compose up -d
 ```
