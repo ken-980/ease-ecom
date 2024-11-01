@@ -1,5 +1,5 @@
 
-export const Revenue = () => {
+export const RevenueCount = () => {
 
     return (
         <div className="p-4 rounded h-32 shadow bg-green-50 space-y-4">

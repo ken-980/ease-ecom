@@ -1,6 +1,6 @@
 
 
-export const Orders = () => {
+export const OrdersCount = () => {
 
     return (
         <div className="p-4 rounded h-32 shadow bg-green-50 space-y-4">

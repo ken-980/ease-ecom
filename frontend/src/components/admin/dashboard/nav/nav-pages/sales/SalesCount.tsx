@@ -1,6 +1,6 @@
 
 
-export const Sales = () => {
+export const SalesCount = () => {
 
     return(
         <div>
