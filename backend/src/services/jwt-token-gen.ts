@@ -1,6 +1,12 @@
 import jwt from "jsonwebtoken"
 import ms from "ms";
 
+
+/**
+ * 
+ * @param adminName 
+ * @returns string | null
+ */
 export const jwtTokenGen = (adminName: string) => {
 
     try {
