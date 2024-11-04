@@ -18,6 +18,7 @@ import { InventoryActionFuncion } from "./actions/admin/inventory-action";
 import { EditProduct } from "./components/admin/dashboard/nav/nav-pages/inventory/edit-product-page";
 import { eidtProductAction } from "./actions/admin/edit-product-action";
 import { editProdcutPageLoader } from "./loaders/admin/edit-product-loader";
+import { adminViewDataLoaderFunction } from "./loaders/admin/main-dashboard-view-loader";
 
 
 export const routes = createBrowserRouter([
@@ -53,7 +54,8 @@ export const routes = createBrowserRouter([
                 children : [
                     {
                         path : "/admin/:adminId/dashboard",
-                        element : <DashBoardPage />
+                        element : <DashBoardPage />,
+                        loader : adminViewDataLoaderFunction
                     },
                     {
                         path : "/admin/:adminId/inventory",
