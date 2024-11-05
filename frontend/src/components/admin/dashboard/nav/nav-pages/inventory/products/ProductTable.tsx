@@ -1,5 +1,5 @@
 import { useLoaderData, useNavigation, useParams } from "react-router";
-import { InventoryProductInfo } from "../../../../../../../types/products";
+import { InventoryProductInfo } from "../../../../../../../types/products-types";
 import { Form } from "react-router-dom";
 import { Link } from "react-router-dom";
 

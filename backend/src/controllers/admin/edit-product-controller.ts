@@ -1,9 +1,9 @@
 import { Response, Request } from "express"
-import { ImagesType } from "../../types/types"
+import { ImagesType } from "../../types/product-types"
 import { imagePulbicIdExtractor } from "../../services/admin/public-id-extractor";
 import deletImageLinksFromCloud from "../../services/admin/cloudinary/product-link-delete";
 import { logger } from "../../../logger";
-import { productDetails } from "../../types/types";
+import { productDetails } from "../../types/product-types";
 import { productUpLoaderService } from "../../services/admin/cloudinary/products-upload";
 import { productDetailsUpdate } from "../../services/db/admin/update-product-details-service-db";
 

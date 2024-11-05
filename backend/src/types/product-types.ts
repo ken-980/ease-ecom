@@ -21,3 +21,10 @@ export interface ImagePublicIds {
 export interface ImagesType {
     url: string
 }
+
+
+//dashboard data type
+export interface DashboardViewData {
+    inventoryVolume: number
+    inventoryValue: number
+}

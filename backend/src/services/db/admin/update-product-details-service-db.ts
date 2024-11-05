@@ -1,4 +1,4 @@
-import { ImageUrls, productDetails } from "../../../types/types";
+import { ImageUrls, productDetails } from "../../../types/product-types";
 import { prismaClientInstance } from '../../../db/prismaClient';
 
 //save product details to database

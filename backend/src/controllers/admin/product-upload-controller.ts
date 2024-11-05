@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { productUpLoaderService } from "../../services/admin/cloudinary/products-upload";
-import { productDetails } from "../../types/types";
+import { productDetails } from "../../types/product-types";
 import { productDetailsServeSaveDb } from '../../services/db/admin/product-details-service-db';
 import { logger } from "../../../logger";
 

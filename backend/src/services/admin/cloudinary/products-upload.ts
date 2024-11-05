@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary"
-import { ImageUrls } from '../../../types/types';
+import { ImageUrls } from '../../../types/product-types';
 import { logger } from "../../../../logger";
 
 

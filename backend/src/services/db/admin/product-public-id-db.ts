@@ -1,4 +1,4 @@
-import { ImagePublicIds } from "../../../types/types"
+import { ImagePublicIds } from "../../../types/product-types"
 import { prismaClientInstance } from '../../../db/prismaClient';
 import { logger } from "../../../../logger";
 import { json } from "body-parser";

@@ -1,7 +1,7 @@
 import { useLoaderData, useNavigation } from "react-router"
 import { AddProductForm } from "./AddProductForm"
 import { ProductsTable } from "./products/ProductTable"
-import { InventoryProductInfo } from "../../../../../../types/products"
+import { InventoryProductInfo } from "../../../../../../types/products-types"
 
 
 export const Inventory = () => {

@@ -1,7 +1,7 @@
 import { useLoaderData,useParams, useFetcher } from "react-router-dom"
 import { LoadAnimationCircle } from '../../../../../common/LoadAnimation';
 import { FormEvent, useRef, useState } from "react";
-import { EditProductInfo } from "../../../../../../types/products";
+import { EditProductInfo } from "../../../../../../types/products-types";
 import { axiosEditProductFomReq } from "../../../../../../services/product-edit-form-req";
 // import { axiosReqUserData } from "../../../../../../services/product-add-form-req";
 

@@ -5,10 +5,11 @@ const DashboardHome = () => {
     
     return (
         <div>
+            {/* main nav */}
             <div>
                  <MainNav />
             </div>
-
+        
             <main className="">
                  <Outlet/>
              </main>

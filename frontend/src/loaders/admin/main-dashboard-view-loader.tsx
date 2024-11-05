@@ -18,7 +18,11 @@ export const adminViewDataLoaderFunction : LoaderFunction = async () : Promise<o
                 baseURL : `${baseUrl}`,
                 timeout : 8000
             });
-            console.log(getReq.data)
+            console.log(getReq.data?.data)
+
+            if(getReq.status === 200){
+                return getReq.data?.data;
+            }
         return null;
     } catch (error){
 

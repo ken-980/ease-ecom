@@ -1,4 +1,4 @@
-import { ImageUrls, productDetails, ImagePublicIds } from "../../../types/types";
+import { ImageUrls, productDetails, ImagePublicIds } from "../../../types/product-types";
 import { prismaClientInstance } from '../../../db/prismaClient';
 
 //save product details to database
@@ -23,6 +23,7 @@ export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], product:
                 productGenderUse: product.product_gender_use.toString(),
                 productQuantity: Number(product.product_quantity),
                 productFilePath: productFilePathsJson,
+                productValue: Number(product.product_price) * Number(product.product_quantity),
                 admin: {
                     connect: {
                         userName: product.admin_id.toString()

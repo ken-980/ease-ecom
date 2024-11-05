@@ -1,6 +1,6 @@
 import  { AxiosError } from "axios";
 import { axiosInstance } from "../../lib/axios-instance";
-import { ProductsInfo, InventoryPageInfo, InventoryProductInfo } from '../../types/products';
+import { ProductsInfo, InventoryPageInfo, InventoryProductInfo } from '../../types/products-types';
 
 
 export const inventoryPageLoader = async () => {

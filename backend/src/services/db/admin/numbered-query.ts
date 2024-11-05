@@ -6,7 +6,6 @@ export const limitQuery = async (from: number = 0, to: number): Promise<object |
 
         const prisma = prismaClientInstance;
 
-
         const results = await prisma.productInfo.findMany({
             skip: from,
             take: to

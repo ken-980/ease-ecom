@@ -2,7 +2,7 @@
 import  { AxiosError } from "axios";
 import { axiosInstance } from "../../lib/axios-instance";
 import { LoaderFunction } from "react-router";
-import { EditProductInfo, ProductDbInfo } from "../../types/products";
+import { EditProductInfo, ProductDbInfo } from "../../types/products-types";
 
 
 export const editProdcutPageLoader : LoaderFunction = async ({ params }) => {

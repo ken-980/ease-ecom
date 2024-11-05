@@ -1,5 +1,11 @@
 import { prismaClientInstance } from '../../../db/prismaClient';
 
+/**
+ * 
+ * @returns Promsie<null | number>
+ */
+
+
 
 //get total products inventory from db
 export const totalInventory = async (): Promise<number | null> => {

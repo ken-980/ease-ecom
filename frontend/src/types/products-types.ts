@@ -44,3 +44,10 @@ export interface InventoryProductInfo {
     totalInventoryProducts: number
 }
 
+
+//dashboard data type
+export interface DashboardViewData {
+    inventoryVolume: number
+    inventoryValue: number
+
+}
