@@ -16,9 +16,11 @@ datasource db {
 model Admin {
   id        Int      @id @default(autoincrement())
   userName  String   @unique
+  fullname  String?
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+
 
   ProductInfo ProductInfo[]
 }
@@ -44,4 +46,35 @@ model ProductInfo {
 model ProductPublicId {
   id          Int          @id @default(autoincrement())
   publicId    String          @unique
+}
+
+
+model Customer {
+  customerId Int  @id @default(autoincrement())
+  fullname String
+  email   String @unique
+  phoneNumber String @unique
+  orders Orders?
+  updatedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+// cutomers -> orders -> orderedItem
+
+model Orders {
+  orderId Int @id @default(autoincrement())
+  productInfoId Int
+  customer Customer @relation(fields: [customerId], references: [customerId])
+  customerId Int @unique
+  orderItems OrderedItems? 
+  updatedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+
+model OrderedItems {
+  orderItemsId Int @id @default(autoincrement())
+  OrderId Orders @relation(fields: [order], references: [orderId])
+  order Int @unique
+  productId Int
+  quantity Int
 }
