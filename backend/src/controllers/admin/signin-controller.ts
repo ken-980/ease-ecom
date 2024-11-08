@@ -4,8 +4,7 @@ import { jwtTokenGen } from "../../services/jwt-token-gen";
 import ms from "ms";
 import { getPassword } from "../../services/db/admin/get-password";
 import { passwordDecode } from '../../services/password-decode';
-import { cookieName } from "../../global-config";
-
+import { cookieName } from "../../configs/global-config";
 
 
 /**

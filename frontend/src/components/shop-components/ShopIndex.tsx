@@ -6,7 +6,7 @@ import { ProductsMain } from "./products-components/ProductMain";
 const ShopHome = () => {
 
     return (
-        <div className="mt-5  mx-44">
+        <div className="mt-5 mx-44">
             <header>
                 <HeaderMain />
             </header>

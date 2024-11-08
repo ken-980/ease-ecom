@@ -1,6 +1,5 @@
 import { Response, Request } from "express";
-import { cookieName } from "../../global-config";
-
+import { cookieName } from '../../configs/global-config';
 
 const signOutController = async (req: Request, res: Response) => {
 

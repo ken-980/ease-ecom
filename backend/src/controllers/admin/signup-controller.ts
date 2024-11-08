@@ -5,8 +5,7 @@ import { passwordHash } from "../../services/password-hash";
 import { jwtTokenGen } from "../../services/jwt-token-gen";
 import ms from "ms"
 import { getAdminByUsername } from "../../services/db/admin/get-admin-by-username";
-import { cookieName } from "../../global-config";
-
+import { cookieName } from "../../configs/global-config";
 
 /**
  * Resgisters admins

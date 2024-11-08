@@ -1,9 +1,8 @@
 import { Request, Response } from "express"
 import userNameFromCookies from "../../services/admin/username-from-cookie";
-import { cookieName } from "../../global-config";
 import { getAdminData } from "../../services/admin/get-admin-data";
 import { adminIdVerify } from '../../services/admin/admin-id-verify';
-
+import { cookieName } from '../../configs/global-config';
 const adminDetail = async (req: Request, res: Response) => {
 
     try {

@@ -19,6 +19,7 @@ import { EditProduct } from "./components/admin/dashboard/nav/nav-pages/inventor
 import { eidtProductAction } from "./actions/admin/edit-product-action";
 import { editProdcutPageLoader } from "./loaders/admin/edit-product-loader";
 import { adminViewDataLoaderFunction } from "./loaders/admin/main-dashboard-view-loader";
+import { shopHomeLoader } from "./loaders/shop/shop-home-page-loader";
 
 
 export const routes = createBrowserRouter([
@@ -32,7 +33,8 @@ export const routes = createBrowserRouter([
             },
             {
                 path : "/",
-                element : <ShopHome />
+                element : <ShopHome />,
+                // loader : shopHomeLoader
             },
             {
                 path : "/admin",

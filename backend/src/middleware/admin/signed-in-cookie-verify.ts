@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { cookieName } from "../../global-config";
+import { cookieName } from "../../configs/global-config";
 import coookieVerify from "../../services/admin/cookie-verify";
 
 

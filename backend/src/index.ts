@@ -3,7 +3,8 @@ import 'dotenv/config'
 import cors from "cors"
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import adminRoutes from "./routes/admin-routes/admin-routes";
+import adminRoutes from "./routes/admin";
+import shopRoutes from "./routes/shop";
 
 
 const app: Application = express();
@@ -18,22 +19,19 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 
-
-
 const PORT = process.env.PORT || 3000;
 
-
 //routes
+
+//admin routes
 app.use("/admin", adminRoutes)
 
-
-app.get("/", (req: Request, res: Response) => {
-
-    console.log("ok");
-    res.send('ok');
-})
+//shop routes
+app.use("/shop", shopRoutes)
 
 app.listen(PORT, () => {
     console.log(`app is running on port: ${PORT}`);
 })
+
+
 

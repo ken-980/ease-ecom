@@ -1,20 +1,26 @@
 import express, { Request, Response } from "express";
-import adminRegisterController from "../../controllers/admin/signup-controller";
-import { signedInCookieVerify } from "../../middleware/admin/signed-in-cookie-verify";
-import signInController from "../../controllers/admin/signin-controller";
-import adminHomeController from "../../controllers/admin/admin-home-controller";
-import signOutController from "../../controllers/admin/sign-out-controller";
-import adminDetail from "../../controllers/admin/admin-detail";
-import productUploadController from "../../controllers/admin/product-upload-controller";
-import Redis from "redis"
-
 import multer from "multer";
-import { recentProductController } from "../../controllers/admin/inventory-page-controller";
-import { deleteRecordController } from "../../controllers/admin/delete-record-controller";
-import { productInfoController } from "../../controllers/admin/product-info-controller";
-import { editProductCrontroller } from "../../controllers/admin/edit-product-controller";
-import { dashboardViewDataController } from "../../controllers/admin/dashboard-view-data-controller";
 
+
+import adminRegisterController from "../controllers/admin/signup-controller";
+import { signedInCookieVerify } from "../middleware/admin/signed-in-cookie-verify";
+
+import signInController from "../controllers/admin/signin-controller";
+import adminHomeController from "../controllers/admin/admin-home-controller";
+
+import signOutController from "../controllers/admin/sign-out-controller";
+import adminDetail from "../controllers/admin/admin-detail";
+
+import productUploadController from "../controllers/admin/product-upload-controller";
+import { recentProductController } from "../controllers/admin/inventory-page-controller";
+
+import { deleteRecordController } from "../controllers/admin/delete-record-controller";
+import { productInfoController } from "../controllers/admin/product-info-controller";
+
+import { editProductCrontroller } from "../controllers/admin/edit-product-controller";
+import { dashboardViewDataController } from "../controllers/admin/dashboard-view-data-controller";
+
+//init
 const memorystorage = multer.memoryStorage();
 const upload = multer({ storage: memorystorage })
 

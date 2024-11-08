@@ -6,7 +6,7 @@ import Cart from "./HeaderUserCart";
 const HeaderUserActions = () => {
 
     return(
-        <div className=" flex justify-between items-center space-x-3">
+        <div className="flex justify-between items-center space-x-3">
             <div>
                 <ProductSearch />
             </div>

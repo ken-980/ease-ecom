@@ -1,7 +1,6 @@
 import { Request, Response } from "express"
-import { cookieName } from "../../global-config";
 import coookieVerify from "../../services/admin/cookie-verify";
-
+import { cookieName } from "../../configs/global-config";
 
 const adminHomeController = async (req: Request, res: Response) => {
 
