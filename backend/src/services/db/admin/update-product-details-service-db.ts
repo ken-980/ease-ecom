@@ -22,6 +22,7 @@ export const productDetailsUpdate = async (imagesUrl: ImageUrls[], product: prod
                 productName: product.product_name.toString(),
                 productPrice: product.product_price.toString(),
                 productType: product.product_type.toString(),
+                productDescription: product.productDescription,
                 productGenderUse: product.product_gender_use.toString(),
                 productQuantity: Number(product.product_quantity),
                 productFilePath: productFilePathsJson,

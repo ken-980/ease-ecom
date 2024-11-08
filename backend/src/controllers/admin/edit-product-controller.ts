@@ -46,7 +46,7 @@ export const editProductCrontroller = async (req: Request, res: Response) => {
                 }
             })
 
-            const { productName, productPrice, productType, productGenderUse, productQuantity, adminId } = req.body;
+            const { productName, productPrice, productType, productGenderUse, productQuantity, adminId, productDescription } = req.body;
 
 
             if (!productName || !productPrice || !productType || !productGenderUse || !productQuantity || !adminId) {
@@ -69,7 +69,7 @@ export const editProductCrontroller = async (req: Request, res: Response) => {
             }
 
             //product details object from request body
-            const reqBodyProductDetails: productDetails = { product_name: productName, product_type: productType, product_gender_use: productGenderUse, product_price: productPrice, product_quantity: productQuantity, admin_id: adminId, productId: productId }
+            const reqBodyProductDetails: productDetails = { product_name: productName, product_type: productType, product_gender_use: productGenderUse, product_price: productPrice, product_quantity: productQuantity, admin_id: adminId, productId: productId, productDescription: productDescription }
 
             //save product details to database
             const dataSaved = await productDetailsUpdate(urlsObjects, reqBodyProductDetails)
