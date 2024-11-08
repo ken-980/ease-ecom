@@ -16,10 +16,16 @@ export const shopHomeController = async (req: Request, res: Response) => {
         //connect redis
 
         await redisClientConfig.connect();
+
         await redisClientConfig.set('mykey', 'Hello from node redis');
         const myKeyValue = await redisClientConfig.get('mykey');
+        await redisClientConfig.expireAt("mykey", 8000);
         console.log(myKeyValue);
 
+
+
+        //close redis client !!!
+        await redisClientConfig.quit()
 
         return res.status(200).send({ success: true, message: "data", data: myKeyValue });
 

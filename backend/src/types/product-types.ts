@@ -10,6 +10,7 @@ export interface productDetails {
     admin_id: string
     product_quantity: string
     productId?: number
+    productDescription: string
 }
 
 //image public urls

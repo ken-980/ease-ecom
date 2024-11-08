@@ -22,6 +22,7 @@ export const productDetailsServeSaveDb = async (imagesUrl: ImageUrls[], product:
                 productType: product.product_type.toString(),
                 productGenderUse: product.product_gender_use.toString(),
                 productQuantity: Number(product.product_quantity),
+                productDescription: product.productDescription,
                 productFilePath: productFilePathsJson,
                 productValue: Number(product.product_price) * Number(product.product_quantity),
                 admin: {

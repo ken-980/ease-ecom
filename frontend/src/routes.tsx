@@ -34,7 +34,7 @@ export const routes = createBrowserRouter([
             {
                 path : "/",
                 element : <ShopHome />,
-                // loader : shopHomeLoader
+                loader : shopHomeLoader
             },
             {
                 path : "/admin",

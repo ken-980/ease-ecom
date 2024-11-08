@@ -16,7 +16,7 @@ datasource db {
 model Admin {
   id        Int      @id @default(autoincrement())
   userName  String   @unique
-  fullname  String?
+  fullname  String?  @default("name")
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -34,6 +34,7 @@ model ProductInfo {
   productGenderUse String
   productPrice     String
   productFilePath  String
+  productDescription String?
   productQuantity  Int
   productValue     Int?
   admin            Admin           @relation(fields: [adminUsername], references: [userName])

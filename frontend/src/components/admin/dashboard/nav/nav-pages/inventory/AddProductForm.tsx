@@ -19,6 +19,8 @@ export const AddProductForm = () => {
 	const productGenderUse = useRef<HTMLSelectElement | null>(null)
 	const productProductQuantity = useRef<HTMLInputElement | null>(null)
 	const productAdminRef = useRef<HTMLInputElement | null>(null)
+    const productDescription = useRef<HTMLTextAreaElement | null>(null)
+
 
 
     async function handleFormSubmission(event : FormEvent){
@@ -32,17 +34,20 @@ export const AddProductForm = () => {
             Array.from(fileInputRef.current.files).forEach((file) => formData.append("product-images", file));
         }
 
-		if(productNameInputRef.current?.value  && productAdminRef.current?.value && productGenderUse.current?.value && productPriceInputRef.current?.value && productProductQuantity.current?.value && productTypeInputRef.current?.value){
+		if(productNameInputRef.current?.value  && productAdminRef.current?.value && productGenderUse.current?.value && productPriceInputRef.current?.value && productProductQuantity.current?.value && productTypeInputRef.current?.value && productDescription.current?.value){
 			formData.append("productName", productNameInputRef.current.value);
 			formData.append("productPrice", productPriceInputRef.current.value);
 			formData.append("productType", productTypeInputRef.current.value);
 			formData.append("productGenderUse", productGenderUse.current.value);
 			formData.append("productQuantity", productProductQuantity.current.value);
+            formData.append("productDescription", productDescription.current.value);
+
             formData.append("adminId", productAdminRef.current.value);
 		}else{
 			setInputMissingError("Input missing");
 		}
 
+        //post data to backend
 		const axios_req = await axiosReqUserData(formData);
 
 		setInputMissingError(axios_req)
@@ -52,7 +57,7 @@ export const AddProductForm = () => {
 
     return (
 
-        
+        //fetcher for does not work with images files
         <fetcher.Form className="p-2 space-y-8" method="post" encType="multipart/form-data" onSubmit={handleFormSubmission}>
 
                 <div className="flex space-x-4 m-1">
@@ -93,7 +98,17 @@ export const AddProductForm = () => {
                     </label>
 
 
+
+
                     <input type="text" ref={productAdminRef} name="admin_id" readOnly value={adminId} hidden    />
+                </div>
+
+                <div>
+
+                    <label htmlFor="product-description">
+                        <span className="block text-sm font-thin text-slate-800 font-plus-font">Product Descripion</span>
+                        <textarea name="productDescription" className="border h-16 w-full focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200" id="product-description" ref={productDescription}></textarea>
+                    </label>
                 </div>
 
                 <div>
