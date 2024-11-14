@@ -12,7 +12,7 @@ export const editProdcutPageLoader : LoaderFunction = async ({ params }) => {
 
         const productId = params?.productId;
 
-        //get recent items, total products, total products, pending orders
+        //get recent items, total products, total products
         const axios_req = await axiosInstance({
             method : "get",
             url : `admin/product/${productId}`,
@@ -41,7 +41,6 @@ export const editProdcutPageLoader : LoaderFunction = async ({ params }) => {
             const imageJson = JSON.parse(axios_req.data?.details.productFilePath);
 
             if(Array.isArray(imageJson)){
-
                 imageJson.map((url) => {
                     images.push(url?.imageUrl)
                 })

@@ -1,4 +1,5 @@
 import { prismaClientInstance } from '../../../db/prismaClient';
+import { productDetails } from '../../../types/product-types';
 
 
 export const productDetailsRangeQuery = async (from: number = 0, to: number): Promise<object | null> => {
@@ -9,7 +10,14 @@ export const productDetailsRangeQuery = async (from: number = 0, to: number): Pr
 
         const results = await prisma.productInfo.findMany({
             skip: from,
-            take: to
+            take: to,
+            select: {
+                id: true,
+                productDescription: true,
+                productFilePath: true,
+                productName: true,
+                productPrice: true
+            }
         })
         return results;
     } catch (error) {

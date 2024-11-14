@@ -32,6 +32,7 @@ export const routes = createBrowserRouter([
                 element : <SignInForm /> 
             },
             {
+                
                 path : "/",
                 element : <ShopHome />,
                 loader : shopHomeLoader
