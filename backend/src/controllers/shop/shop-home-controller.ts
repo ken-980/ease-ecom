@@ -2,7 +2,6 @@ import { Request, Response } from "express"
 import { redisClientConfig } from "../../configs/redis-config";
 import { productDetailsRangeQuery } from "../../services/db/shop/get-product-details-load-service-db";
 import { logger } from "../../../logger";
-import { firstImageUtility } from "../../utilities/first-image-link-utility";
 
 type HomepageLoaderType = {
     id: number

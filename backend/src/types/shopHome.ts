@@ -4,7 +4,7 @@ export interface HomepageLoaderType {
     id: number
     productName: string
     productDescription: string
-    productFilePath: imagesUrls[]
+    productFilePath: string
     productPrice: number
 }
 interface imagesUrls {

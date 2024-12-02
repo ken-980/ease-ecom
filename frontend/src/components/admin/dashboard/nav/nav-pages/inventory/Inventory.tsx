@@ -2,6 +2,7 @@ import { useLoaderData, useNavigation } from "react-router"
 import { AddProductForm } from "./AddProductForm"
 import { ProductsTable } from "./products/ProductTable"
 import { InventoryProductInfo } from "../../../../../../types/products-types"
+import { AddProductMainPhoto } from "./AddProductMainPhoto"
 
 
 export const Inventory = () => {
@@ -29,7 +30,7 @@ export const Inventory = () => {
                 </div>
             </div>
 
-            <div className="flex  mt-8 space-x-2  h-96">
+            <div className="flex mt-8 space-x-2 h-auto">
                 
                 <div className="w-2/5 p-4 border shadow-sm">
                     <div className="flex justify-between px-2">
@@ -52,6 +53,10 @@ export const Inventory = () => {
                     </div>                  
                 </div>
 
+            </div>
+
+            <div>
+                <AddProductMainPhoto />
             </div>
         </div>
     )
