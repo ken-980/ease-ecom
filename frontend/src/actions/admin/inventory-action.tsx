@@ -25,30 +25,31 @@ export const InventoryActionFuncion : ActionFunction = async ({ request }) => {
         
         }
         
-
         if(intent === "uploadMainPhoto"){  
             const {productId} = Object.fromEntries(formData)
 
+            //error checks
             if(productId === "" || !productId){
                 return "No product Id"
             }
-            console.log(Object.fromEntries(formData))
 
-            await axiosInstance({
+            const axiosReq = await axiosInstance({
                 data: formData,
                 method : "post",
                 url : "/admin/mainProductPhoto",
                 withCredentials : true
             })
-
-            console.log("sent");
+            console.log(axiosReq.data)
+            return axiosReq.data?.message;            
           }
 
         return null;
     } catch (error) {
         console.log(error)
         if(error instanceof AxiosError){
-            console.log(error.response?.data)
+            console.log(error.response?.data?.message)
+            
+            return error.response?.data?.message
         }
         return null;
     }
