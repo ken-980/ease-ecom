@@ -16,9 +16,9 @@ export const AddProductMainPhoto = () => {
                     </label>
                 </div>
                 <div>
-                    <label htmlFor="main-photo">
+                    <label htmlFor="mainPhoto">
                         <span className="block text-sm font-thin text-slate-800 font-plus-font"> Main Photo</span>
-                        <input type="file" name="productFile" id="main-photo" className="border focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200 w-64"/>
+                        <input type="file" name="mainPhoto" id="main-photo" className="border focus:outline-none focus:border-sky-700 p-2 font-plus-font text-sm text-gray-600 bg-gray-200 w-64"/>
                     </label>
                 </div>
 

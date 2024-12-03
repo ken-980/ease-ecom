@@ -19,6 +19,7 @@ import { productInfoController } from "../controllers/admin/product-info-control
 
 import { editProductCrontroller } from "../controllers/admin/edit-product-controller";
 import { dashboardViewDataController } from "../controllers/admin/dashboard-view-data-controller";
+import { mainProductImageController } from "../controllers/admin/main-product-image-adding-controller";
 
 //init
 const memorystorage = multer.memoryStorage();
@@ -52,14 +53,22 @@ adminRoutes.post("/product-upload", upload.array("product-images", 10), (req: Re
 adminRoutes.get("/recent/:productNumber", (req: Request, res: Response) => recentProductController(req, res));
 
 
+adminRoutes.delete("/del", (req: Request, res: Response) => deleteRecordController(req, res));
+
 //get a product-info
 adminRoutes.get("/product/:productId", (req: Request, res: Response) => productInfoController(req, res));
 
 //edit-product
 adminRoutes.post("/edit-product", upload.array("newImages", 10), (req: Request, res: Response) => editProductCrontroller(req, res));
 
+
+//upload product main photo
+adminRoutes.post("/mainProductPhoto", upload.single("mainPhoto"), (req: Request, res: Response) => mainProductImageController(req, res));
+
+
 //dashboard home loader
 adminRoutes.get("/dashboardViewData", (req: Request, res: Response) => dashboardViewDataController(req, res));
+
 
 
 

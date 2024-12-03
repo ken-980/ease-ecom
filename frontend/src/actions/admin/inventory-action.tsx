@@ -10,12 +10,14 @@ export const InventoryActionFuncion : ActionFunction = async ({ request }) => {
         
         
         //get intention of submit button
-        const intent = formData.get("del");
+        const intent = formData.get("intent");
 
-        if(intent === "del"){
-            console.log
+        if(intent === "deleteProduct"){
+            const {productId} = Object.fromEntries(formData)
+
+            //for deletion of product
             await axiosInstance({
-                data : { intent },
+                data : { productId },
                 method : "delete",
                 url : "/admin/del",
                 withCredentials : true
@@ -30,9 +32,17 @@ export const InventoryActionFuncion : ActionFunction = async ({ request }) => {
             if(productId === "" || !productId){
                 return "No product Id"
             }
-  
-            console.log("upload photos")
-        }
+            console.log(Object.fromEntries(formData))
+
+            await axiosInstance({
+                data: formData,
+                method : "post",
+                url : "/admin/mainProductPhoto",
+                withCredentials : true
+            })
+
+            console.log("sent");
+          }
 
         return null;
     } catch (error) {
