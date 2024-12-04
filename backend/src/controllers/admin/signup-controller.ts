@@ -6,6 +6,7 @@ import { jwtTokenGen } from "../../services/jwt-token-gen";
 import ms from "ms"
 import { getAdminByUsername } from "../../services/db/admin/get-admin-by-username";
 import { cookieName } from "../../configs/global-config";
+import { logger } from "../../../logger";
 
 /**
  * Resgisters admins
@@ -75,6 +76,7 @@ const adminRegisterController = async (req: Request, res: Response) => {
         return;
 
     } catch (error) {
+        logger.log({ level: "error", message: `Sign up controller error: ${error}` })
 
         return res.status(500).send({ message: "Sever error", success: false });
 

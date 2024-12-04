@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import { cookieName } from '../../configs/global-config';
+import { logger } from "../../../logger";
 
 const signOutController = async (req: Request, res: Response) => {
 
@@ -15,7 +16,8 @@ const signOutController = async (req: Request, res: Response) => {
         return;
 
     } catch (error) {
-        console.log(`Sign out controller error ${error}`);
+        logger.log({ level: "error", message: `Sign out controller error: ${error}` })
+
         res.status(401).send({ success: false, message: "session time out" });
         return;
     }

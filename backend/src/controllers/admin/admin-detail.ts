@@ -3,6 +3,7 @@ import userNameFromCookies from "../../services/admin/username-from-cookie";
 import { getAdminData } from "../../services/admin/get-admin-data";
 import { adminIdVerify } from '../../services/admin/admin-id-verify';
 import { cookieName } from '../../configs/global-config';
+import { logger } from "../../../logger";
 const adminDetail = async (req: Request, res: Response) => {
 
     try {
@@ -34,7 +35,7 @@ const adminDetail = async (req: Request, res: Response) => {
         return;
 
     } catch (error) {
-        console.log(`Error in adminDetail => ${error}`);
+        logger.log({ level: "error", message: `Error in admin detail controller: ${error}` })
 
         res.status(500).send({ message: "Server Error", success: false });
         return;

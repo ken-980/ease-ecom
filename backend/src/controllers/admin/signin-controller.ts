@@ -5,6 +5,7 @@ import ms from "ms";
 import { getPassword } from "../../services/db/admin/get-password";
 import { passwordDecode } from '../../services/password-decode';
 import { cookieName } from "../../configs/global-config";
+import { logger } from "../../../logger";
 
 
 /**
@@ -60,7 +61,10 @@ const signInController = async (req: Request, res: Response) => {
         return res.status(401).send({ message: "Sever error try again", success: false });
 
     } catch (error) {
-        console.log(`Server error => ${error}`);
+
+        logger.log({ level: "error", message: `Sign in controller error: ${error}` })
+
+
         return res.status(401).send({ message: "Sever error try again", success: false });
     }
 

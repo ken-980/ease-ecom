@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import coookieVerify from "../../services/admin/cookie-verify";
 import { cookieName } from "../../configs/global-config";
+import { logger } from "../../../logger";
 
 const adminHomeController = async (req: Request, res: Response) => {
 
@@ -21,7 +22,8 @@ const adminHomeController = async (req: Request, res: Response) => {
         return res.status(200).send({ success: true, message: "session time valid" });
 
     } catch (error) {
-        console.log(`Home Controller Error => : ${error}`);
+        logger.log({ level: "error", message: `Home Controller Error => : ${error}` })
+
         res.status(500).send({ success: true, message: "server error" });
     }
 }
