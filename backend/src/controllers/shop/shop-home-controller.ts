@@ -24,6 +24,9 @@ export const shopHomeController = async (req: Request, res: Response) => {
 
     try {
 
+        //set query limit or defaults to 10
+        const { limit } = req.query || "0";
+
         //connect redis
         await redisClientConfig.connect();
 
@@ -32,34 +35,33 @@ export const shopHomeController = async (req: Request, res: Response) => {
 
         if (cachedDbData) {
 
+            //quit redis before sending cached data
             await redisClientConfig.quit()
 
-            return res.status(200).send({ success: true, message: "data", data: cachedDbData });
+            return res.status(200).send({ success: true, message: "data", responseData: cachedDbData });
 
         } else {
 
             //db range data query
-            const productDetails = await productDetailsRangeQuery(1, 3);
+            const productDetails = await productDetailsRangeQuery(0, Number(limit));
 
-
-            console.log(productDetails)
             //cache data
             await redisClientConfig.set("dbDataShopHome", JSON.stringify(productDetails))
 
-            //set expire time cached data expiration
+            //set expire time for cached data expiration
             await redisClientConfig.expireAt("dbDataShopHome", 9000);
 
             //quit redis
             await redisClientConfig.quit()
 
-            return res.status(200).send({ success: true, message: "data", data: productDetails });
+            return res.status(200).send({ success: true, message: "", responseData: productDetails });
         }
 
     } catch (error) {
 
         logger.log({ level: "error", message: `Shop home controller error => : ${error}` })
 
-        res.status(500).send({ success: true, message: "server error" });
+        res.status(500).send({ success: false, message: "server error" });
     }
 }
 

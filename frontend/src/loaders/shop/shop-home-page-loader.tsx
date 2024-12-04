@@ -15,23 +15,21 @@ export const shopHomeLoader : LoaderFunction = async () : Promise<object | null>
             const getRequest = await axios({
                 method : "get",
                 withCredentials : true,
-                url : `/shop/shopHome`,
+                url : `/shop/shopHome?limit=10`,
                 baseURL : `${baseUrl}`,
                 timeout : 8000
             });
 
-
-            console.log(getRequest.data?.data)
-
+            console.log(getRequest.data?.responseData)
 
             if(getRequest.status === 200){
-                return getRequest.data?.data;
+                return getRequest.data?.responseData;
             }
         return null;
     } catch (error){
 
         if(error instanceof AxiosError){
-            console.log(error.response?.data)
+            console.log(error.response?.data?.message)
         }
         return null;
     }

@@ -14,10 +14,11 @@ export const productDetailsRangeQuery = async (from: number = 0, to: number): Pr
             select: {
                 id: true,
                 productDescription: true,
-                productFilePath: true,
                 productName: true,
-                productPrice: true
-            }
+                productPrice: true,
+                mainPhoto: true
+            },
+
         })
         return results;
     } catch (error) {

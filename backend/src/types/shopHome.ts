@@ -7,6 +7,9 @@ export interface HomepageLoaderType {
     productFilePath: string
     productPrice: number
 }
+
+
+
 interface imagesUrls {
     imageUrl: string
 }

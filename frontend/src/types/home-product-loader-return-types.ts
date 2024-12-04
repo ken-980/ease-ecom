@@ -4,11 +4,13 @@ export interface HomepageLoaderType {
     id: number
     productName: string
     productDescription: string
-    productFilePath: imagesUrls[]
+    mainPhoto: MainPhoto
     productPrice: number
 }
-interface imagesUrls {
-    imageUrl: string
+
+interface MainPhoto {
+    id: number,
+    photoLink: string
 }
 
 export interface InventoryPageInfo {

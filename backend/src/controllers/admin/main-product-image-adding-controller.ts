@@ -17,7 +17,8 @@ export const mainProductImageController = async (req: Request, res: Response) =>
 
 		//check of product exists
 		const productExist = await checkProductExists(Number(req.body?.productId));
-		console.log(productExist)
+
+
 		if (!productExist) {
 			return res.status(400).send({ success: false, message: "Product ID does not exist" });
 		}
