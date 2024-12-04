@@ -15,7 +15,7 @@ export const ProductsTable = () => {
             
             // using, list img not supported under a table tag
             <li className={`flex p-2 ${(index+1) % 2 ? "bg-white" : "bg-slate-200"}`} key={index}>
-                <div className="w-1/5 text-center"> {index+1} </div>
+                <div className="w-1/5 text-center"> {product.productId} </div>
 
                     <div className="w-1/5 text-center flex justify-center content-center"> 
                         <img className="size-10" loading="lazy" src={product.productImage} />
@@ -56,7 +56,7 @@ export const ProductsTable = () => {
         <div className="m-1 overflow-auto">
             <div className="flex">
                 <div className="border  w-1/5 text-center font-bold border-slate-400 p-2 font-plus-font text-sm">
-                    <h4> # </h4>
+                    <h4> Product ID </h4>
                 </div>
                 <div className="border w-1/5 text-center font-bold border-slate-400 p-2 font-plus-font text-sm">
                     <h4> Image </h4>
