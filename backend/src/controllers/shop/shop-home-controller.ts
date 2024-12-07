@@ -25,20 +25,20 @@ export const shopHomeController = async (req: Request, res: Response) => {
     try {
 
         //set query limit or defaults to 10
-        const { limit } = req.query || "0";
+        const { limit } = req.query || 10;
 
         //connect redis
         await redisClientConfig.connect();
 
 
-        const cachedDbData = await redisClientConfig.get("dbDataShopHome");
+        const cachedDbData = await redisClientConfig.get("cachedData");
 
         if (cachedDbData) {
 
             //quit redis before sending cached data
             await redisClientConfig.quit()
 
-            return res.status(200).send({ success: true, message: "data", responseData: cachedDbData });
+            return res.status(200).send({ success: true, responseData: cachedDbData });
 
         } else {
 
@@ -46,20 +46,17 @@ export const shopHomeController = async (req: Request, res: Response) => {
             const productDetails = await productDetailsRangeQuery(0, Number(limit));
 
             //cache data
-            await redisClientConfig.set("dbDataShopHome", JSON.stringify(productDetails))
-
-            //set expire time for cached data expiration
-            await redisClientConfig.expireAt("dbDataShopHome", 9000);
+            await redisClientConfig.set("cachedData", JSON.stringify(productDetails))
 
             //quit redis
             await redisClientConfig.quit()
 
-            return res.status(200).send({ success: true, message: "", responseData: productDetails });
+            return res.status(200).send({ success: true, responseData: productDetails });
         }
 
     } catch (error) {
 
-        logger.log({ level: "error", message: `Shop home controller error => : ${error}` })
+        logger.log({ level: "error", message: `Shop home controller, ${error}` })
 
         res.status(500).send({ success: false, message: "server error" });
     }

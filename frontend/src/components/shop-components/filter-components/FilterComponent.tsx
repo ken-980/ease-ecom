@@ -12,30 +12,26 @@ const FilterProductSelect = () => {
                 <div className="border border-yellow-100">
                     <select className="px-4 py-2 text-slate-700 font-alt-font border-l-0 bg-white outline-0" name="#" id="#">
                         <option value=""> Price </option>
-                        <option value="value1"> value 1</option>
-                        <option value="valu2">value 2</option>
-                        <option value="value3">value 3</option>
-                        <option value="value4">value 4</option>
+                        <option value="l100"> Less than 100 </option>
+                        <option value="l200">Less than 200</option>
+                        <option value="l300">Less than 300</option>
                     </select>
                 </div>
 
                 <div className="border border-yellow-100">
                     <select className="px-4 py-2  text-slate-700 font-alt-font border-l-0 bg-white outline-0" name="#" id="#">
-                        <option value=""> Types </option>
-                        <option value=" Cologne">Cologne</option>
-                        <option value="Eau De Toilette">Eau De Toilette</option>
-                        <option value="value3">value 3</option>
-                        <option value="value4">value 4</option>
+                        <option value="cologne"> Perfume Type </option>
+                        <option value="cologne">Cologne</option>
+                        <option value="eau_de_toilette">Eau De Toilette</option>
                     </select>
                 </div>
 
                 <div className="border border-yellow-100">
                     <select className="px-4 py-2  text-slate-700 font-alt-font border-l-0 bg-white outline-0" name="#" id="#">
-                        <option value=""> Gender </option>
-                        <option value="value1"> value 1</option>
-                        <option value="valu2">value 2</option>
-                        <option value="value3">value 3</option>
-                        <option value="value4">value 4</option>
+                        <option value="unisex"> Gender </option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="unisex">unisex</option>
                     </select>
                 </div>
 

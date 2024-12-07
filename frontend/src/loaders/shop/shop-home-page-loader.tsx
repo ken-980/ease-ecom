@@ -12,7 +12,7 @@ export const shopHomeLoader : LoaderFunction = async () : Promise<object | null>
 
     try {
         
-            const getRequest = await axios({
+            const response = await axios({
                 method : "get",
                 withCredentials : true,
                 url : `/shop/shopHome?limit=10`,
@@ -20,10 +20,9 @@ export const shopHomeLoader : LoaderFunction = async () : Promise<object | null>
                 timeout : 8000
             });
 
-            console.log(getRequest.data?.responseData)
 
-            if(getRequest.status === 200){
-                return getRequest.data?.responseData;
+            if(response.status === 200){
+                return JSON.parse(response.data?.responseData);
             }
         return null;
     } catch (error){

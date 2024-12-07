@@ -9,7 +9,6 @@ export interface HomepageLoaderType {
 }
 
 
-
 interface imagesUrls {
     imageUrl: string
 }

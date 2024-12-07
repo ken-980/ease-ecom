@@ -11,6 +11,7 @@ export interface HomepageLoaderType {
 interface MainPhoto {
     id: number,
     photoLink: string
+    productId: number
 }
 
 export interface InventoryPageInfo {

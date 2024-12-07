@@ -1,10 +1,12 @@
-import express, { Application, Response, Request } from "express"
+import express, { Application } from "express"
+import { clerkMiddleware } from "@clerk/express";
 import 'dotenv/config'
 import cors from "cors"
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import adminRoutes from "./routes/admin";
 import shopRoutes from "./routes/shop";
+
 
 
 const app: Application = express();
@@ -17,12 +19,11 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(clerkMiddleware())
 
 const PORT = process.env.PORT || 3000;
 
 //routes
-
 //admin routes
 app.use("/admin", adminRoutes)
 

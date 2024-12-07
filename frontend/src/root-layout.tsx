@@ -10,7 +10,7 @@ if (!PUBLISHABLE_KEY) {
 export default function RootLayout() {
   const navigate = useNavigate();
 
-  return (
+  return ( 
     <ClerkProvider
       routerPush={(to) => navigate(to)}
       routerReplace={(to) => navigate(to, { replace: true })}

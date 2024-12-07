@@ -47,6 +47,7 @@ export const routes = createBrowserRouter([
                 element : <AdminRegister />,
                 action : adminRegisterAction
             },
+           
             {
                 path : "/admin/:adminId/",
                 element : <DashboardHome />,
