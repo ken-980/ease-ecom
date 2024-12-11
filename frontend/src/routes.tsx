@@ -20,6 +20,7 @@ import { eidtProductAction } from "./actions/admin/edit-product-action";
 import { editProdcutPageLoader } from "./loaders/admin/edit-product-loader";
 import { adminViewDataLoaderFunction } from "./loaders/admin/main-dashboard-view-loader";
 import { shopHomeLoader } from "./loaders/shop/shop-home-page-loader";
+import { ProductsCartCheck } from "./components/shop-components/cart/product-check";
 
 
 export const routes = createBrowserRouter([
@@ -47,7 +48,11 @@ export const routes = createBrowserRouter([
                 element : <AdminRegister />,
                 action : adminRegisterAction
             },
-           
+            {
+                //create a dynamic route here for user
+                path : "/order/",
+                element : <ProductsCartCheck />
+            },
             {
                 path : "/admin/:adminId/",
                 element : <DashboardHome />,

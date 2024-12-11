@@ -6,6 +6,8 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import adminRoutes from "./routes/admin";
 import shopRoutes from "./routes/shop";
+// import { createClerkClient } from "@clerk/clerk-sdk-node";
+
 
 
 
@@ -19,7 +21,13 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use(clerkMiddleware())
+// app.use(clerkMiddleware());
+
+// const clerkClient = createClerkClient({
+//     secretKey: process.env.CLERK_PUBLISHABLE_KEY,
+// })
+
+
 
 const PORT = process.env.PORT || 3000;
 

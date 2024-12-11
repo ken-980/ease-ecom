@@ -8,9 +8,9 @@ export const ErrorPage = () => {
         <div className="flex justify-center items-center">
             <div>
                 <h1>Oops</h1>
-                <p> {error.status} </p>
-                <p> {error.statusText} </p>
-                <p> {error.data} </p>
+                <p className="text-red-500"> {error.status} </p>
+                <p className="text-red-500"> {error.statusText} </p>
+                <p className="text-red-500"> {error.data} </p>
             </div>
         </div>
     )
