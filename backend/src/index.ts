@@ -21,22 +21,22 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-// app.use(clerkMiddleware());
-
-// const clerkClient = createClerkClient({
-//     secretKey: process.env.CLERK_PUBLISHABLE_KEY,
-// })
 
 
 
 const PORT = process.env.PORT || 3000;
 
 //routes
+
 //admin routes
 app.use("/admin", adminRoutes)
 
+
 //shop routes
 app.use("/shop", shopRoutes)
+
+
+
 
 app.listen(PORT, () => {
     console.log(`app is running on port: ${PORT}`);

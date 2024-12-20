@@ -50,7 +50,7 @@ export const routes = createBrowserRouter([
             },
             {
                 //create a dynamic route here for user
-                path : "/order/",
+                path : "/order/:userId",
                 element : <ProductsCartCheck />
             },
             {
