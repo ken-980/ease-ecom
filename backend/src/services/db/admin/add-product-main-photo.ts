@@ -9,16 +9,16 @@ export const addProductMainPhoto = async (imageLink: string, productId: number):
     try {
 
         //relates, photoLink to ProductInfo (id)
-        const newAdmin = await prismaClientInstance.productMainPhoto.create({
-            data: {
-                photoLink: imageLink,
-                product: {
-                    connect: {
-                        id: Number(productId)
-                    }
-                }
-            }
-        })
+        // const newAdmin = await prismaClientInstance.productMainPhoto.create({
+        //     data: {
+        //         photoLink: imageLink,
+        //         product: {
+        //             connect: {
+        //                 id: Number(productId)
+        //             }
+        //         }
+        //     }
+        // })
         return true;
     } catch (error) {
         console.log(`Database error => ${error}`);

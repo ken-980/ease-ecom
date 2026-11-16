@@ -6,7 +6,6 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import adminRoutes from "./routes/admin";
 import shopRoutes from "./routes/shop";
-// import { createClerkClient } from "@clerk/clerk-sdk-node";
 
 
 

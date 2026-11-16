@@ -16,7 +16,7 @@ export const productDetailsRangeQuery = async (from: number = 0, to: number): Pr
                 productDescription: true,
                 productName: true,
                 productPrice: true,
-                mainPhoto: true
+                
             },
 
         })

@@ -19,9 +19,25 @@ jobs:
         with:
           node-version: '26'
           cache: 'yarn'
+          cache-dependency-path: |
+            frontend/yarn.lock
+            backend/yarn.lock
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - name: corepack enable
+        run: corepack enable && corepack prepare yarn@4.2.2 --activate
 
-      - name: Run build / tests
-        run: yarn test --if-present
+      - name: Install backend dependencies
+        run: yarn install --immutable
+        working-directory: backend
+
+      - name: Install frontend dependencies
+        run: yarn install --immutable
+        working-directory: frontend
+
+      - name: Run backend tests
+        run: yarn test
+        working-directory: backend
+
+      - name: Build frontend
+        run: yarn build
+        working-directory: frontend
