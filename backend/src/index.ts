@@ -22,8 +22,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 
-
 const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+    console.log("App endpoint working")
+    res.status(200).send("App working")
+})
 
 //routes
 

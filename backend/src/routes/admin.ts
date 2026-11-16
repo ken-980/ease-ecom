@@ -18,9 +18,9 @@ import { deleteRecordController } from "../controllers/admin/delete-record-contr
 import { productInfoController } from "../controllers/admin/product-info-controller";
 
 import { editProductCrontroller } from "../controllers/admin/edit-product-controller";
-import { dashboardViewDataController } from "../controllers/admin/dashboard-view-data-controller";
 import { mainProductImageController } from "../controllers/admin/main-product-image-adding-controller";
 import { handleCloudinaryUploads } from "../middleware/admin/upload-middleware";
+import { dashboardViewDataController } from '../controllers/admin/dashboard-view-data-controller';
 
 //init
 const memorystorage = multer.memoryStorage();
@@ -51,24 +51,24 @@ adminRoutes.post("/product-upload", handleCloudinaryUploads,  productUploaderCon
 
 //inventory page loader
 //page items
-adminRoutes.get("/recent/:productNumber", (req: Request, res: Response) => recentProductController(req, res));
+adminRoutes.get("/recent/:productNumber", recentProductController);
 
 
-adminRoutes.delete("/del", (req: Request, res: Response) => deleteRecordController(req, res));
+adminRoutes.delete("/del", deleteRecordController);
 
 //get a product-info
-adminRoutes.get("/product/:productId", (req: Request, res: Response) => productInfoController(req, res));
+adminRoutes.get("/product/:productId", productInfoController);
 
 //edit-product
-adminRoutes.post("/edit-product", upload.array("newImages", 10), (req: Request, res: Response) => editProductCrontroller(req, res));
+adminRoutes.post("/edit-product", upload.array("newImages", 10), editProductCrontroller);
 
 
 //upload product main photo
-adminRoutes.post("/mainProductPhoto", upload.single("mainPhoto"), (req: Request, res: Response) => mainProductImageController(req, res));
+adminRoutes.post("/mainProductPhoto", upload.single("mainPhoto"), mainProductImageController);
 
 
 //dashboard home loader
-adminRoutes.get("/dashboardViewData", (req: Request, res: Response) => dashboardViewDataController(req, res));
+adminRoutes.get("/dashboardViewData", dashboardViewDataController);
 
 
 

@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { redisClientConfig } from "../../configs/redis-config";
+import { connectRedis, redisClient } from "../../configs/redis-config";
 import { productDetailsRangeQuery } from "../../services/db/shop/get-product-details-load-service-db";
 import { logger } from "../../../logger";
 
@@ -26,19 +26,24 @@ export const shopHomeController = async (req: Request, res: Response) => {
 
         //set query limit or defaults to 10
         const { limit } = req.query || 10;
+        const CACHE_KEY = "admin:dashboard:view";
+        const TTL_SECONDS = 60;
 
-        //connect redis
-        await redisClientConfig.connect();
 
+        const readCache = async (): Promise<HomepageLoaderType[] | null> => {
+            try {
+                if (!redisClient.isReady) return null;
+                const cached = await redisClient.get(CACHE_KEY);
+                return cached ? (JSON.parse(cached) as HomepageLoaderType[]) : null;
+            } catch (error) {
+                logger.log({ level: "warn", message: `Dashboard cache read failed: ${error}` });
+                return null;
+            }
+        };
 
-        const cachedDbData = await redisClientConfig.get("cachedData");
+        if (readCache) {
 
-        if (cachedDbData) {
-
-            //quit redis before sending cached data
-            await redisClientConfig.quit()
-
-            return res.status(200).send({ success: true, responseData: cachedDbData });
+            return res.status(200).send({ success: true, responseData: readCache });
 
         } else {
 
@@ -46,10 +51,10 @@ export const shopHomeController = async (req: Request, res: Response) => {
             const productDetails = await productDetailsRangeQuery(0, Number(limit));
 
             //cache data
-            await redisClientConfig.set("cachedData", JSON.stringify(productDetails))
+            await redisClient.set("cachedData", JSON.stringify(productDetails))
 
             //quit redis
-            await redisClientConfig.quit()
+            await redisClient.quit()
 
             return res.status(200).send({ success: true, responseData: productDetails });
         }

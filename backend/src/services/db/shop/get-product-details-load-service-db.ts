@@ -1,5 +1,4 @@
 import { prismaClientInstance } from '../../../db/prismaClient';
-import { productDetails } from '../../../types/product-types';
 
 
 export const productDetailsRangeQuery = async (from: number = 0, to: number): Promise<object | null> => {
