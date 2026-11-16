@@ -1,34 +1,16 @@
-import { Request, Response } from "express"
+import { Request, Response } from "express";
 import { logger } from "../../../logger";
-import { totalInventory } from "../../services/db/admin/total-product-inventory";
-import { DashboardViewData } from "../../types/product-types";
-import { productValue } from "../../services/db/admin/get-product-price";
+import { getDashboardViewData } from "../../services/admin/get-dashboard-view-data-service";
 
-
-//loads admin dashboard data 
 export const dashboardViewDataController = async (req: Request, res: Response) => {
-
     try {
+        const data = await getDashboardViewData();
 
-        //total products inventory service
-        const totalProducts = await totalInventory();
-
-        //total product value
-        const value = await productValue();
-
-        if (typeof totalProducts === "number" && typeof value === "number") {
-
-            const viewData: DashboardViewData = { inventoryValue: value, inventoryVolume: totalProducts };
-
-            return res.status(200).send({ success: true, message: "data", data: viewData });
-
-        }
-
-        return res.status(400).send({ success: false, message: "Unkwon error" });
+        return res.status(200).send({ success: true, message: "data", data });
 
     } catch (error) {
-        logger.log({ level: "error", message: `Error in upload service: ${error}` })
-        return res.status(500).send({ success: false, message: "Sever Error" });
-
+        logger.log({ level: "error", message: `Error loading dashboard data: ${error}` });
+        
+        return res.status(500).send({ success: false, message: "Server Error" });
     }
-}
+};
