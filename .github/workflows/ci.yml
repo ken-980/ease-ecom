@@ -23,6 +23,9 @@ jobs:
             frontend/yarn.lock
             backend/yarn.lock
 
+      - name: corepack enable
+        run: corepack enable && corepack prepare yarn@4.2.2 --activate
+
       - name: Install backend dependencies
         run: yarn install --immutable
         working-directory: backend
