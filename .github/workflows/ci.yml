@@ -14,20 +14,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '26'
+          node-version: '22'
           cache: 'yarn'
           cache-dependency-path: |
             frontend/yarn.lock
             backend/yarn.lock
 
-      - name: corepack enable
-        run: corepack enable && corepack prepare yarn@4.2.2 --activate
-
       - name: Install backend dependencies
         run: yarn install --immutable
+        working-directory: backend
+
+      - name: Generate Prisma client
+        run: yarn prisma generate
         working-directory: backend
 
       - name: Install frontend dependencies
