@@ -1,3 +1,4 @@
+import { productUploaderController } from './../controllers/admin/product-upload-controller';
 import express, { Request, Response } from "express";
 import multer from "multer";
 
@@ -11,7 +12,6 @@ import adminHomeController from "../controllers/admin/admin-home-controller";
 import signOutController from "../controllers/admin/sign-out-controller";
 import adminDetail from "../controllers/admin/admin-detail";
 
-import productUploadController from "../controllers/admin/product-upload-controller";
 import { recentProductController } from "../controllers/admin/inventory-page-controller";
 
 import { deleteRecordController } from "../controllers/admin/delete-record-controller";
@@ -20,6 +20,7 @@ import { productInfoController } from "../controllers/admin/product-info-control
 import { editProductCrontroller } from "../controllers/admin/edit-product-controller";
 import { dashboardViewDataController } from "../controllers/admin/dashboard-view-data-controller";
 import { mainProductImageController } from "../controllers/admin/main-product-image-adding-controller";
+import { handleCloudinaryUploads } from "../middleware/admin/upload-middleware";
 
 //init
 const memorystorage = multer.memoryStorage();
@@ -28,24 +29,24 @@ const upload = multer({ storage: memorystorage })
 const adminRoutes = express.Router();
 
 
-adminRoutes.post("/", (req: Request, res: Response) => adminHomeController(req, res));
+adminRoutes.post("/",  adminHomeController);
 
-adminRoutes.post("/sign-out", (req: Request, res: Response) => signOutController(req, res))
+adminRoutes.post("/sign-out", signOutController)
 
-adminRoutes.post("/register", (req: Request, res: Response) => adminRegisterController(req, res));
+adminRoutes.post("/register", adminRegisterController);
 
-adminRoutes.post("/signin", (req: Request, res: Response) => signInController(req, res));
+adminRoutes.post("/signin", signInController);
 
 
 //middleware here
 adminRoutes.use(signedInCookieVerify);
 
 //admin data
-adminRoutes.get("/adminData/:adminId", (req: Request, res: Response) => adminDetail(req, res));
+adminRoutes.get("/adminData/:adminId", adminDetail);
 
 
 //product upload
-adminRoutes.post("/product-upload", upload.array("product-images", 10), (req: Request, res: Response) => productUploadController(req, res));
+adminRoutes.post("/product-upload", handleCloudinaryUploads,  productUploaderController);
 
 
 //inventory page loader

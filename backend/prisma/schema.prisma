@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// This is your Prisma schema file
 
 generator client {
   provider = "prisma-client-js"
@@ -10,82 +6,94 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Admin {
-  id        Int      @id @default(autoincrement())
-  userName  String   @unique
-  fullname  String?  @default("name")
+  id        Int           @id @default(autoincrement())
+  userName  String        @unique
+  fullname  String?       @default("name")
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
-
-  ProductInfo ProductInfo[]
+  products  ProductInfo[]
 }
 
-//ProductInfo table relates 1:1 Admin
-//ProductInfo table relates 1:1 ProductPublicId
 model ProductInfo {
-  id               Int             @id @default(autoincrement())
-  productName      String
-  productType      String
-  productGenderUse String
-  productPrice     String
-  productFilePath  String
+  id                 Int            @id @default(autoincrement())
+  productName        String
+  productType        String
+  productGenderUse   String
+  productPrice       Decimal        // Best practice: store currency as Decimal or Int (cents)
   productDescription String?
-  productQuantity  Int
-  productValue     Int?
-  admin            Admin           @relation(fields: [adminUsername], references: [userName])
-  adminUsername    String
-  mainPhoto ProductMainPhoto?
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @default(now())
+  productQuantity    Int
+  productValue       Int?
+  
+  adminUsername      String
+  admin              Admin          @relation(fields: [adminUsername], references: [userName], onDelete: Cascade)
+  
+  // Relations
+  media              ProductMedia[] // Handles all images and videos dynamically
+  orderItems         OrderedItems[]
 
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 }
 
-
-
-model ProductMainPhoto {
-  id Int @id @default(autoincrement())
-  photoLink String
-  product ProductInfo @relation(fields: [productId], references: [id])
-  productId Int @unique
+enum MediaType {
+  IMAGE
+  VIDEO
 }
 
-model ProductPublicId {
-  id          Int          @id @default(autoincrement())
-  publicId    String          @unique
+model ProductMedia {
+  id        Int         @id @default(autoincrement())
+  url       String      // Cloudinary secure_url returned after upload
+  publicId  String      @unique // Cloudinary public_id (crucial for deleting/updating media later)
+  type      MediaType   @default(IMAGE)
+  isMain    Boolean     @default(false) // True for the primary product thumbnail
+  
+  productId Int
+  product   ProductInfo @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime    @default(now())
 }
-
 
 model Customer {
-  customerId Int  @id @default(autoincrement())
-  fullname String
-  email   String @unique
-  phoneNumber String @unique
-  orders Orders?
-  updatedAt DateTime @default(now())
-  createdAt DateTime @default(now())
+  customerId  Int      @id @default(autoincrement())
+  fullname    String
+  email       String   @unique
+  phoneNumber String   @unique
+  
+  orders      Orders[] // A customer can have many orders
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
-// cutomers -> orders -> orderedItem
 
 model Orders {
-  orderId Int @id @default(autoincrement())
-  productInfoId Int
-  customer Customer @relation(fields: [customerId], references: [customerId])
-  customerId Int @unique
-  orderItems OrderedItems? 
-  updatedAt DateTime @default(now())
-  createdAt DateTime @default(now())
+  orderId     Int            @id @default(autoincrement())
+  
+  customerId  Int
+  customer    Customer       @relation(fields: [customerId], references: [customerId])
+  
+  items       OrderedItems[] // An order can have many items
+  
+  totalAmount Decimal        @default(0.00)
+  status      String         @default("PENDING") // PENDING, PROCESSING, COMPLETED, CANCELLED
+  
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
 
-
 model OrderedItems {
-  orderItemsId Int @id @default(autoincrement())
-  OrderId Orders @relation(fields: [order], references: [orderId])
-  order Int @unique
-  productId Int
-  quantity Int
+  orderItemId Int         @id @default(autoincrement())
+  
+  orderId     Int
+  order       Orders      @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+  
+  productId   Int
+  product     ProductInfo @relation(fields: [productId], references: [id])
+  
+  quantity    Int
+  price       Decimal     // Locking in the price at the time of purchase
 }

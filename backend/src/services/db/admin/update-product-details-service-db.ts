@@ -25,12 +25,12 @@ export const productDetailsUpdate = async (imagesUrl: ImageUrls[], product: prod
                 productDescription: product.productDescription,
                 productGenderUse: product.product_gender_use.toString(),
                 productQuantity: Number(product.product_quantity),
-                productFilePath: productFilePathsJson,
-                admin: {
-                    connect: {
-                        userName: product.admin_id.toString()
-                    }
-                },
+                // productFilePath: productFilePathsJson,
+                // admin: {
+                //     connect: {
+                //         userName: product.admin_id.toString()
+                //     }
+                // },
 
             }
         })
