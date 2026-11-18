@@ -1,5 +1,5 @@
 import { ActionFunction } from "react-router";
-import { axiosInstance } from "../../lib/axios-instance";
+import { api } from "../../lib/axios-api";
 import { AxiosError } from "axios";
 
 export const InventoryActionFuncion : ActionFunction = async ({ request }) => {
@@ -16,7 +16,7 @@ export const InventoryActionFuncion : ActionFunction = async ({ request }) => {
             const {productId} = Object.fromEntries(formData)
 
             //for deletion of product
-            await axiosInstance({
+            await api({
                 data : { productId },
                 method : "delete",
                 url : "/admin/del",
@@ -33,7 +33,7 @@ export const InventoryActionFuncion : ActionFunction = async ({ request }) => {
                 return "No product Id"
             }
 
-            const axiosReq = await axiosInstance({
+            const axiosReq = await api({
                 data: formData,
                 method : "post",
                 url : "/admin/mainProductPhoto",
