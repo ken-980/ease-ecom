@@ -1,6 +1,6 @@
 
 import  { AxiosError } from "axios";
-import { axiosInstance } from "../../lib/axios-instance";
+import { api } from "../../lib/axios-api";
 import { LoaderFunction } from "react-router";
 import { EditProductInfo, ProductDbInfo } from "../../types/products-types";
 
@@ -13,7 +13,7 @@ export const editProdcutPageLoader : LoaderFunction = async ({ params }) => {
         const productId = params?.productId;
 
         //get recent items, total products, total products
-        const axios_req = await axiosInstance({
+        const axios_req = await api({
             method : "get",
             url : `admin/product/${productId}`,
             withCredentials : true

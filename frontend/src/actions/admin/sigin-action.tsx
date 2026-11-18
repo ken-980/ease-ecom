@@ -1,51 +1,53 @@
-import { ActionFunction,redirect } from "react-router";
-import axios, { AxiosError } from "axios";
-import { baseUrl } from "../../configs";
+import { ActionFunction, redirect } from 'react-router-dom';
+import { isAxiosError } from 'axios';
+import { api } from '../../lib/axios-api';
+export interface AdminLoginActionData {
+  error: string;
+}
 
-/**
- * Sign in Form Action
- * @param param0 
- * @returns {Promise}
- */
-export const signInAction : ActionFunction = async ({request}) => {
+export interface SignInResponse {
+  username: string;
+  message?: string;
+}
 
-    try {
-        
-        const formData = Object.fromEntries(await request.formData())
+export const signInAction: ActionFunction = async ({
+  request,
+}): Promise<AdminLoginActionData | Response> => {
+  const formData = await request.formData();
+  const rawUsername = formData.get('username');
+  const rawPassword = formData.get('password');
 
-        const { username, password } = formData;
-        if(!username || !password){
-            return "Error: All Fields are required";
-        }
+  // 1. Narrow types from FormDataEntryValue (string | File | null) to string
+  const username = typeof rawUsername === 'string' ? rawUsername.trim() : '';
+  const password = typeof rawPassword === 'string' ? rawPassword : '';
 
-        /**
-         * post form-data to endpoint  
-         */
-        const axiosRes = await axios({
-            method : "post",
-            data : formData,
-            withCredentials : true,
-            url : "/admin/signin",
-            baseURL : `${baseUrl}`
-        });
+  if (!username || !password) {
+    return { error: 'Both username and password are required.' };
+  }
 
+  try {
+    const { data } = await api.post<SignInResponse>('/admin/signin', {
+      username,
+      password,
+    });
 
-        if(axiosRes.status !== 200){
-            return axiosRes.data?.message;        
-        }
-
-        //save username in localstorage
-        localStorage.setItem("uname", JSON.stringify(axiosRes.data?.username));
-
-        //redirect to dashboard with admin id => username
-        return redirect(`/admin/${axiosRes.data?.username}/dashboard`);
-
-    } catch (error) {
-    
-        if(error instanceof AxiosError){
-            return error.response?.data?.message;
-        }
-        return null;
+    if (!data?.username) {
+      return { error: 'Unexpected server response. Please try again.' };
     }
 
-}
+    localStorage.setItem('uname', JSON.stringify(data.username));
+
+    return redirect(`/admin/${encodeURIComponent(data.username)}/dashboard`);
+  } catch (error) {
+    if (isAxiosError<{ message?: string }>(error)) {
+      const serverMessage = error.response?.data?.message;
+      return {
+        error:
+          serverMessage ||
+          'Invalid credentials or server error. Please try again.',
+      };
+    }
+
+    return { error: 'An unexpected error occurred. Please try again.' };
+  }
+};

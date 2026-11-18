@@ -1,5 +1,5 @@
 import  { AxiosError } from "axios";
-import { axiosInstance } from "../../lib/axios-instance";
+import { api } from "../../lib/axios-api";
 import { ProductsInfo, InventoryPageInfo, InventoryProductInfo } from '../../types/products-types';
 
 
@@ -8,7 +8,7 @@ export const inventoryPageLoader = async () => {
     try {
 
         //get recent items, total products, total products, pending orders
-        const axios_req = await axiosInstance({
+        const axios_req = await api({
             method : "get",
             url : "admin/recent/6",
             withCredentials : true

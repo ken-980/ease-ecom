@@ -19,7 +19,7 @@ export const adminHomeLoaderFunction : LoaderFunction = async () : Promise<objec
             return redirect("/admin");
         }else{
             const jsonLocalStorageData = JSON.parse(adminUsernameLocalStorageData)
-
+            console.log(jsonLocalStorageData)
             /* Get admin data for dashboard */
             const getReq = await axios({
                 method : "get",

@@ -1,5 +1,5 @@
 import { ActionFunction } from "react-router";
-import { axiosInstance } from "../../lib/axios-instance";
+import { api } from "../../lib/axios-api";
 import { baseUrl } from "../../configs";
 
 
@@ -16,7 +16,7 @@ export const eidtProductAction : ActionFunction = async ({ request }) => {
         const formData = await request.formData();
         
         //send product to edit details to backend
-        const axios_req = await axiosInstance({
+        const axios_req = await api({
             method : "post",
             data :  formData,
             baseURL : `${baseUrl}`,
