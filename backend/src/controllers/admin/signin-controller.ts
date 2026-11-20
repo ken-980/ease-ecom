@@ -1,73 +1,91 @@
-import { Request, Response } from "express"
-import { getAdminByUsername } from "../../services/db/admin/get-admin-by-username";
-import { jwtTokenGen } from "../../services/jwt-token-gen";
-import ms from "ms";
-import { getPassword } from "../../services/db/admin/get-password";
+import { Request, Response } from 'express';
+import ms from 'ms';
+import { getAdminByUsername } from '../../services/db/admin/get-admin-by-username';
+import { jwtTokenGen } from '../../services/jwt-token-gen';
+import { getPassword } from '../../services/db/admin/get-password';
 import { passwordDecode } from '../../services/password-decode';
-import { cookieName } from "../../configs/global-config";
-import { logger } from "../../../logger";
-
+import { cookieName } from '../../configs/global-config';
+import { logger } from '../../../logger';
 
 /**
- * 
- * @param req 
- * @param res 
- * @returns admin credentials => admin username and Id
+ * Authenticates an admin and sets an HttpOnly session cookie
  */
-
 const signInController = async (req: Request, res: Response) => {
+  try {
+    const rawUsername = req.body?.username;
+    const password = req.body?.password;
 
-    try {
+    const username =
+      typeof rawUsername === 'string' ? rawUsername.trim() : '';
 
-        const { username, password } = req.body;
-
-        if (!username || !password) {
-            res.status(400).send({ message: "Data required", success: false });
-            return;
-        }
-
-        const hashedPassword = await getPassword(username);
-
-        if (!hashedPassword) {
-            res.status(401).send({ message: "Invalid username or password", success: false });
-            return;
-        }
-
-        const passwordDecoded = await passwordDecode(password, hashedPassword);
-
-        if (!passwordDecoded) {
-            res.status(401).send({ message: "Invalid username or password", success: false });
-            return;
-        }
-
-        const adminIdByUsername = await getAdminByUsername(username);
-
-        if (typeof adminIdByUsername !== null) {
-
-            /* generate cookie token */
-            const cookieToken = jwtTokenGen(username);
-
-            res.cookie(cookieName, cookieToken, { maxAge: ms("1d"), httpOnly: true })
-
-            if (!cookieToken) {
-
-                return res.status(500).send({ message: "Sever error", success: false, data: {} });
-            }
-
-            //sends response data if everything is successful
-            return res.status(200).send({ message: "signin", success: true, username: username, adminId: adminIdByUsername });
-        }
-
-        return res.status(401).send({ message: "Sever error try again", success: false });
-
-    } catch (error) {
-
-        logger.log({ level: "error", message: `Sign in controller error: ${error}` })
-
-
-        return res.status(401).send({ message: "Sever error try again", success: false });
+    if (!username || !password) {
+      return res.status(400).json({
+        message: 'Username and password are required.',
+        success: false,
+      });
     }
 
-}
+    const hashedPassword = await getPassword(username);
+
+    if (!hashedPassword) {
+      return res.status(401).json({
+        message: 'Invalid username or password.',
+        success: false,
+      });
+    }
+
+    const isPasswordValid = await passwordDecode(password, hashedPassword);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: 'Invalid username or password.',
+        success: false,
+      });
+    }
+
+    const adminIdByUsername = await getAdminByUsername(username);
+
+    if (adminIdByUsername === null || adminIdByUsername === undefined) {
+      return res.status(500).json({
+        message: 'Server error, please try again.',
+        success: false,
+      });
+    }
+
+    const cookieToken = jwtTokenGen(username);
+
+    if (!cookieToken) {
+      return res.status(500).json({
+        message: 'Server error, please try again.',
+        success: false,
+      });
+    }
+
+    res.cookie(cookieName, cookieToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: ms('8h'),
+      path: '/',
+    });
+
+    return res.status(200).json({
+      message: 'Signed in successfully.',
+      success: true,
+      username,
+      adminId: adminIdByUsername,
+    });
+  } catch (error) {
+    logger.log({
+      level: 'error',
+      message: `Sign in controller error: ${error}`,
+    });
+
+    return res.status(500).json({
+      message: 'Server error, please try again.',
+      success: false,
+    });
+  }
+};
 
 export default signInController;

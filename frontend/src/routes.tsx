@@ -16,6 +16,7 @@ import { AdminLogin } from './components/admin/auth/AdminLogin';
 import AdminRegister from './components/admin/auth/AdminRegister';
 import { signInAction } from './actions/admin/sigin-action';
 import { adminRegisterAction } from './actions/admin/admin-register-action';
+import { addProductAction } from './actions/admin/add-product-action';
 
 // Admin Dashboard Pages, Loaders & Actions
 import { DashBoardPage } from './components/admin/dashboard/nav/nav-pages/DashboardPage';
@@ -100,7 +101,7 @@ export const router = createBrowserRouter([
         {
         path: 'add-product',
         element: <AddProductPage />,
-        // action: addProductAction,
+        action: addProductAction,
         },
         {
         path: 'edit-product/:productId',

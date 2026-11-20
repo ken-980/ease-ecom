@@ -1,6 +1,5 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
 import {
   Bold,
   Italic,
@@ -40,7 +39,7 @@ export const RichTextEditor = ({
   const [htmlValue, setHtmlValue] = useState(defaultValue);
 
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [StarterKit],
     content: defaultValue,
     editable: !disabled,
     onUpdate: ({ editor }) => {
