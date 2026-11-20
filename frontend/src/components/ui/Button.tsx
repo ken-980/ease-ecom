@@ -33,7 +33,7 @@ export const Button = ({
     <button
       type={type}
       disabled={disabled || isLoading}
-      className={`h-10 px-4 inline-flex items-center justify-center rounded-md text-sm transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+      className={`h-10 px-4 inline-flex items-center justify-center rounded-sm text-sm transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
         variantStyles[variant]
       } ${fullWidth ? 'w-full' : ''} ${className}`}
       {...props}
