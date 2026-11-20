@@ -3,7 +3,7 @@ import SignInForm from './components/auth/sign-in-form/SignInForm';
 import RootLayout from "./root-layout";
 import ShopHome from "./components/shop-components/ShopIndex";
     import {AdminLogin} from "./components/admin/auth/AdminLogin";
-import AdminRegister from "./components/admin/auth/Register";
+import AdminRegister from "./components/admin/auth/AdminRegister";
 import { adminRegisterAction } from './actions/admin/admin-register-action';
 import { signInAction } from "./actions/admin/sigin-action";
 import DashboardHome from "./components/admin/dashboard/MainDashBoard";

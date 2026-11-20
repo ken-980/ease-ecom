@@ -1,58 +1,87 @@
-import { ActionFunction, redirect } from "react-router";
-import  axios, { AxiosError }  from "axios"
-import { baseUrl } from "../../configs";
+import { ActionFunction, redirect } from 'react-router-dom';
+import { isAxiosError } from 'axios';
+import { api } from '../../lib/axios-api';
+import type { AdminRegisterActionData } from '../../components/admin/auth/AdminRegister';
 
+interface RegisterResponse {
+  username: string;
+  message?: string;
+}
 
-/**
- * 
- * @param param0 react-router request object
- * @returns redirect to dashboard || null
- */
-export const adminRegisterAction : ActionFunction = async ({ request }) => {
+export const adminRegisterAction: ActionFunction = async ({
+  request,
+}): Promise<AdminRegisterActionData | Response> => {
+  const formData = await request.formData();
 
-    try {
+  const rawUsername = formData.get('username');
+  const rawPassword = formData.get('password');
+  const rawPasswordConfirm = formData.get('passwordConfirm');
 
-            const formData = Object.fromEntries(await request.formData());
+  // 1. Narrow FormDataEntryValue types safely
+  const username = typeof rawUsername === 'string' ? rawUsername.trim() : '';
+  const password = typeof rawPassword === 'string' ? rawPassword : '';
+  const passwordConfirm =
+    typeof rawPasswordConfirm === 'string' ? rawPasswordConfirm : '';
 
-            const { username, password, passwordConfirm } = formData;
-            
-            if(!username || !password || !passwordConfirm){
-                return "Error: All Fields are required";
-            }
-        
-            if(password !== passwordConfirm){
-                return "Passwords do not match";
-            }
+  // 2. Collect field-level validation errors before making an API request
+  const fieldErrors: NonNullable<AdminRegisterActionData['fieldErrors']> = {};
 
-        const axiosRes = await axios({
-            method : "post",
-            data : formData,
-            withCredentials : true,
-            url : "/admin/register",
-            baseURL : `${baseUrl}`
-        });
+  if (!username) {
+    fieldErrors.username = 'Username is required.';
+  } else if (username.length < 3) {
+    fieldErrors.username = 'Username must be at least 3 characters.';
+  }
 
-        
-        if(axiosRes.status !== 201){
+  if (!password) {
+    fieldErrors.password = 'Password is required.';
+  } else if (password.length < 8) {
+    fieldErrors.password = 'Password must be at least 8 characters.';
+  }
 
-            return axiosRes.data?.message;            
-        }
-                
-            //store username in localstorage
-            localStorage.setItem("uname", JSON.stringify(axiosRes.data?.username));
+  if (!passwordConfirm) {
+    fieldErrors.passwordConfirm = 'Please confirm your password.';
+  } else if (password !== passwordConfirm) {
+    fieldErrors.passwordConfirm = 'Passwords do not match.';
+  }
 
+  if (Object.keys(fieldErrors).length > 0) {
+    return { fieldErrors };
+  }
 
-            //redirect to dashboard with admin id => username
-            return redirect(`/admin/${axiosRes.data?.username}/dashboard`);
-    
-        
-    } catch (error) {
+  // 3. Submit clean payload via shared Axios client
+  try {
+    const { data } = await api.post<RegisterResponse>('/admin/register', {
+      username,
+      password,
+    });
 
-        if(error instanceof AxiosError){
-            console.log(error?.response?.data?.message);
-            return (error?.response?.data?.message)
-        }
-        return null;
+    if (!data?.username) {
+      return { error: 'Unexpected server response. Please try again.' };
     }
 
-}
+    localStorage.setItem('uname', JSON.stringify(data.username));
+
+    return redirect(`/admin/${encodeURIComponent(data.username)}/dashboard`);
+  } catch (error) {
+    if (isAxiosError<{ message?: string }>(error)) {
+      const status = error.response?.status;
+      const serverMessage = error.response?.data?.message;
+
+      // Map 409 Conflict (e.g., duplicate username) directly to the username input
+      if (status === 409) {
+        return {
+          fieldErrors: {
+            username: serverMessage || 'That username is already taken.',
+          },
+        };
+      }
+
+      return {
+        error:
+          serverMessage || 'Registration failed. Please check your details.',
+      };
+    }
+
+    return { error: 'An unexpected error occurred. Please try again.' };
+  }
+};

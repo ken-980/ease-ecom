@@ -25,7 +25,8 @@ export const Button = ({
   disabled,
   children,
   className = '',
-  type = 'button', // Industry best practice: default to 'button' so buttons inside forms don't accidentally submit
+  // Industry best practice: default to 'button' so buttons inside forms don't accidentally submit
+  type = 'button', 
   ...props
 }: ButtonProps) => {
   return (
