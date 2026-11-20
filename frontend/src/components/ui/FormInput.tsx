@@ -47,7 +47,7 @@ export const FormInput = ({
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errorId : undefined}
           className={cn(
-            'block w-full rounded-md bg-surface-input border px-3.5 py-2.5 text-sm text-ink-primary placeholder-ink-muted/70 shadow-sm transition focus:outline-none focus:ring-1 disabled:opacity-50 disabled:cursor-not-allowed',
+            'block w-full rounded-sm bg-surface-input border px-3.5 py-2.5 text-sm text-ink-primary placeholder-ink-muted/70 shadow-sm transition focus:outline-none focus:ring-1 disabled:opacity-50 disabled:cursor-not-allowed',
             isPasswordField && 'pr-10',
             error
               ? 'border-red-500 focus:border-red-500 focus:ring-red-500'

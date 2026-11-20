@@ -21,19 +21,20 @@ model Admin {
 
 model ProductInfo {
   id                 Int            @id @default(autoincrement())
+  productBrand       String         // Added for luxury brand filtering (e.g., Dior, Chanel)
   productName        String
   productType        String
   productGenderUse   String
-  productPrice       Decimal        // Best practice: store currency as Decimal or Int (cents)
+  productPrice       Decimal        @db.Decimal(10, 2)
   productDescription String?
   productQuantity    Int
-  productValue       Int?
-  
+  productValue       Int?           // Optional (e.g., bottle size in ml or value)
+
   adminUsername      String
   admin              Admin          @relation(fields: [adminUsername], references: [userName], onDelete: Cascade)
-  
+
   // Relations
-  media              ProductMedia[] // Handles all images and videos dynamically
+  media              ProductMedia[]
   orderItems         OrderedItems[]
 
   createdAt          DateTime       @default(now())

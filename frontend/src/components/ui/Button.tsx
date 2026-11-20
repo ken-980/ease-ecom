@@ -25,14 +25,15 @@ export const Button = ({
   disabled,
   children,
   className = '',
-  type = 'button', // Industry best practice: default to 'button' so buttons inside forms don't accidentally submit
+  // Industry best practice: default to 'button' so buttons inside forms don't accidentally submit
+  type = 'button', 
   ...props
 }: ButtonProps) => {
   return (
     <button
       type={type}
       disabled={disabled || isLoading}
-      className={`h-10 px-4 inline-flex items-center justify-center rounded-md text-sm transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+      className={`h-10 px-4 inline-flex items-center justify-center rounded-sm text-sm transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
         variantStyles[variant]
       } ${fullWidth ? 'w-full' : ''} ${className}`}
       {...props}
