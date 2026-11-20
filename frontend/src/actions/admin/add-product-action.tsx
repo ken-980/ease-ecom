@@ -1,4 +1,4 @@
-import { ActionFunction, redirect } from 'react-router-dom';
+import { ActionFunction } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { api } from '../../lib/axios-api';
 import { PRODUCT_CATEGORIES } from '../../constants/productCategories';
@@ -7,12 +7,19 @@ import { TARGET_GENDERS } from '../../constants/productOptions';
 import type { ProductActionData } from '../../pages/admin/inventory/AddProductPage';
 
 interface CreateProductResponse {
+  success?: boolean;
   message?: string;
   product?: {
     id: number;
     productName: string;
   };
 }
+
+type AddProductActionData = ProductActionData & {
+  success: boolean;
+  message?: string;
+  submittedAt?: number;
+};
 
 const VALID_CATEGORIES = new Set<string>(
   PRODUCT_CATEGORIES.map((c) => c.value)
@@ -39,8 +46,7 @@ const getNonEmptyFiles = (formData: FormData, key: string): File[] => {
 
 export const addProductAction: ActionFunction = async ({
   request,
-  params,
-}): Promise<ProductActionData | Response> => {
+}): Promise<AddProductActionData> => {
   const formData = await request.formData();
 
   // 1. Extract and narrow all form inputs safely
@@ -80,7 +86,7 @@ export const addProductAction: ActionFunction = async ({
   );
   const videoFiles = getNonEmptyFiles(formData, PRODUCT_FORM_FIELDS.videos);
 
-  // 2. Comprehensive client-side validation before uploading large media
+  // 2. Client-side validation before uploading media
   const fieldErrors: NonNullable<ProductActionData['fieldErrors']> = {};
 
   if (!productBrand) {
@@ -117,7 +123,6 @@ export const addProductAction: ActionFunction = async ({
     fieldErrors.productQuantity = 'Enter a whole stock quantity (0 or more).';
   }
 
-  // Validate media files (thumbnail required; gallery & videos optional)
   const thumbnail = thumbnailFiles[0];
   if (!thumbnail) {
     fieldErrors.media = 'Main product thumbnail is required.';
@@ -144,10 +149,10 @@ export const addProductAction: ActionFunction = async ({
   }
 
   if (Object.keys(fieldErrors).length > 0) {
-    return { fieldErrors };
+    return { success: false, fieldErrors };
   }
 
-  // 3. Construct clean multipart FormData payload with normalized values
+  // 3. Construct clean multipart FormData payload
   const payload = new FormData();
   payload.append(PRODUCT_FORM_FIELDS.productBrand, productBrand);
   payload.append(PRODUCT_FORM_FIELDS.productName, productName);
@@ -176,31 +181,44 @@ export const addProductAction: ActionFunction = async ({
     payload.append(PRODUCT_FORM_FIELDS.videos, file);
   });
 
-  // 4. Submit multipart payload to Express + Multer endpoint
+  // 4. Submit multipart payload to /admin/products and stay on the same page
   try {
-    // Adjust endpoint path if your Express router mounts this at /admin/products
-    await api.post<CreateProductResponse>('/admin/products', payload, {
-      headers: {
-        // Override default 'application/json' so browser sets multipart boundary automatically
-        'Content-Type': 'multipart/form-data',
-      },
-      // Large video uploads to Cloudinary can take longer than standard JSON requests
-      timeout: 60_000,
-    });
+    const response = await api.post<CreateProductResponse>(
+      '/admin/products',
+      payload,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 60_000,
+      }
+    );
 
-    // Redirect back to the parent inventory list (/admin/:adminId/inventory)
-    if (params.adminId) {
-      return redirect(
-        `/admin/${encodeURIComponent(params.adminId)}/inventory`
-      );
-    }
-
-    return redirect('..');
+    return {
+      success: true,
+      message:
+        response.data?.message ||
+        `"${productName}" was published successfully!`,
+      submittedAt: Date.now(),
+    };
   } catch (error) {
-    if (isAxiosError<{ message?: string; fieldErrors?: ProductActionData['fieldErrors'] }>(error)) {
-      // Support structured fieldErrors if your Express validator returns them
-      if (error.response?.data?.fieldErrors) {
+    if (
+      isAxiosError<{
+        message?: string;
+        fieldErrors?: ProductActionData['fieldErrors'];
+      }>(error)
+    ) {
+      if (!error.response) {
         return {
+          success: false,
+          error:
+            'Cannot reach the server (localhost:3000). Check that your backend is running.',
+        };
+      }
+
+      if (error.response.data?.fieldErrors) {
+        return {
+          success: false,
           error: error.response.data.message,
           fieldErrors: error.response.data.fieldErrors,
         };
@@ -208,13 +226,15 @@ export const addProductAction: ActionFunction = async ({
 
       if (error.code === 'ECONNABORTED') {
         return {
+          success: false,
           error:
             'Upload timed out. Check your connection or try smaller media files.',
         };
       }
 
-      if (error.response?.status === 413) {
+      if (error.response.status === 413) {
         return {
+          success: false,
           fieldErrors: {
             media: 'Uploaded files exceed the server size limit.',
           },
@@ -222,13 +242,15 @@ export const addProductAction: ActionFunction = async ({
       }
 
       return {
+        success: false,
         error:
-          error.response?.data?.message ||
+          error.response.data?.message ||
           'Failed to publish product. Please try again.',
       };
     }
 
     return {
+      success: false,
       error: 'An unexpected error occurred while uploading the product.',
     };
   }

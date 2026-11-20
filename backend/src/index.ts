@@ -4,7 +4,7 @@ import 'dotenv/config'
 import cors from "cors"
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import adminRoutes from "./routes/admin";
+import adminRoutes from "./routes/adminRoutes";
 import shopRoutes from "./routes/shop";
 
 

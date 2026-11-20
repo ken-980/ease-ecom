@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import multer from 'multer';
-import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 import { streamUpload } from '../../helpers/multer-upload-helper';
-
 
 dotenv.config();
 
@@ -13,43 +12,94 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const storage = multer.memoryStorage();
+export interface ProcessedMediaItem {
+  url: string;
+  publicId: string;
+  type: 'IMAGE' | 'VIDEO';
+  isMain: boolean;
+}
 
+// Multer with strict file limits and MIME filtering
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB max (accommodates product videos)
+    files: 9, // 1 thumbnail + 6 galleryImages + 2 videos
+  },
+  fileFilter: (_req, file, cb) => {
+    if (
+      file.mimetype.startsWith('image/') ||
+      file.mimetype.startsWith('video/')
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only images and videos are allowed.'));
+    }
+  },
+});
 
+export const parseProductMediaFields = upload.fields([
+  { name: 'thumbnail', maxCount: 1 },
+  { name: 'galleryImages', maxCount: 6 },
+  { name: 'videos', maxCount: 2 },
+]);
 
-
-
-
-// 4Express Middleware to process multiple files and attach results to req.body
-export const handleCloudinaryUploads = async (req: Request, res: Response, next: NextFunction) => {
+// Upload all 3 field groups concurrently to Cloudinary
+export const handleCloudinaryUploads = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    
-    
-    // Proceed if no files were attached
-    if (!files || !files['media']) {
-      return next(); 
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+
+    const thumbnailFile = files?.thumbnail?.[0];
+    const galleryFiles = files?.galleryImages ?? [];
+    const videoFiles = files?.videos ?? [];
+
+    if (!thumbnailFile) {
+      return res.status(400).json({
+        success: false,
+        message: 'Main product thumbnail is required.',
+      });
     }
 
-    // Map through each uploaded file and upload concurrently to Cloudinary
-    const uploadPromises = files['media'].map(async (file, index) => {
-      const uploadResult = await streamUpload(file.buffer, 'ecommerce_products');
-      
-      return {
-        url: uploadResult.secure_url,
-        publicId: uploadResult.public_id,
-        // Determine type based on mimetype
-        type: file.mimetype.startsWith('video/') ? 'VIDEO' : 'IMAGE',
-        // Check if this file index matches the designated main photo index sent from the frontend
-        isMain: req.body.mainPhotoIndex ? parseInt(req.body.mainPhotoIndex) === index : index === 0,
-      };
-    });
+    // Build upload tasks with explicit isMain and MediaType flags
+    const uploadTasks: Promise<ProcessedMediaItem>[] = [
+      streamUpload(thumbnailFile.buffer, 'ecommerce_products').then((res) => ({
+        url: res.secure_url,
+        publicId: res.public_id,
+        type: 'IMAGE',
+        isMain: true,
+      })),
 
-    // Wait for all uploads to complete
-    req.body.processedMedia = await Promise.all(uploadPromises);
-    next();
+      ...galleryFiles.map((file) =>
+        streamUpload(file.buffer, 'ecommerce_products').then((res) => ({
+          url: res.secure_url,
+          publicId: res.public_id,
+          type: 'IMAGE' as const,
+          isMain: false,
+        }))
+      ),
+
+      ...videoFiles.map((file) =>
+        streamUpload(file.buffer, 'ecommerce_products').then((res) => ({
+          url: res.secure_url,
+          publicId: res.public_id,
+          type: 'VIDEO' as const,
+          isMain: false,
+        }))
+      ),
+    ];
+
+    req.body.processedMedia = await Promise.all(uploadTasks);
+    return next();
   } catch (error) {
-    return res.status(500).json({ success: false, error: (error as Error).message });
+    return res.status(500).json({
+      success: false,
+      message: (error as Error).message || 'Media upload to Cloudinary failed.',
+    });
   }
 };
-

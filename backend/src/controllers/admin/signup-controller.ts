@@ -1,86 +1,109 @@
-import { Response, Request } from "express";
-import { checkAdminUsernameExist } from "../../services/db/admin/check-admin-exist";
-import { addNewAdmin } from "../../services/db/admin/add-new-admin";
-import { passwordHash } from "../../services/password-hash";
-import { jwtTokenGen } from "../../services/jwt-token-gen";
-import ms from "ms"
-import { getAdminByUsername } from "../../services/db/admin/get-admin-by-username";
-import { cookieName } from "../../configs/global-config";
-import { logger } from "../../../logger";
+import { Response, Request } from 'express';
+import ms from 'ms';
+import { checkAdminUsernameExist } from '../../services/db/admin/check-admin-exist';
+import { addNewAdmin } from '../../services/db/admin/add-new-admin';
+import { passwordHash } from '../../services/password-hash';
+import { jwtTokenGen } from '../../services/jwt-token-gen';
+import { getAdminByUsername } from '../../services/db/admin/get-admin-by-username';
+import { cookieName } from '../../configs/global-config';
+import { logger } from '../../../logger';
 
 /**
- * Resgisters admins
- * @param {object} req 
- * @param {object} res 
- * @returns {Promise}
+ * Registers a new admin and sets an HttpOnly session cookie
  */
-
 const adminRegisterController = async (req: Request, res: Response) => {
+  try {
+    const rawUsername = req.body?.username;
+    const password = req.body?.password;
+    const passwordConfirm = req.body?.passwordConfirm;
 
-    try {
-        const { username, password, passwordConfirm } = req.body
-        if (!username || !password || !passwordConfirm) {
-            res.status(400).send({ message: "No body data in request", success: false });
-            return;
-        }
+    const username =
+      typeof rawUsername === 'string' ? rawUsername.trim() : '';
 
-        if (password !== passwordConfirm) {
-            res.status(400).send({ message: "Admin passwords do not match", success: false });
-            return;
-        }
-
-        //check if username
-        const userExist = await checkAdminUsernameExist(username);
-
-        if (userExist) {
-            res.status(409).send({ message: `User with username : ${username}, already exits`, success: false, data: {} });
-            return;
-        }
-
-        //hash password and save
-        //generate cookies
-        const hashedPassword = await passwordHash(password);
-
-        if (typeof hashedPassword === 'string') {
-
-            const newAdmin = await addNewAdmin(username, hashedPassword);
-            if (newAdmin) {
-
-                /* generate cookie token */
-                const cookieToken = jwtTokenGen(username);
-
-                res.cookie(cookieName, cookieToken, { maxAge: ms("1d"), httpOnly: true })
-
-                if (!cookieToken) {
-                    res.status(500).send({ message: "Sever error", success: false, data: {} });
-                    return;
-                }
-
-                const adminIdByUsername = await getAdminByUsername(username);
-                if (typeof adminIdByUsername !== null) {
-
-                    return res.status(201).send({ message: "Admin Added", success: true, username: username, adminId: adminIdByUsername });
-                }
-
-                return res.status(500).send({ message: "Sever error", success: false, data: {} });
-
-            }
-
-        } else {
-
-            res.status(500).send({ message: "Sever error", success: false, data: {} });
-            return;
-        }
-
-        res.status(500).send({ message: "Sever error", success: false, data: {} });
-        return;
-
-    } catch (error) {
-        logger.log({ level: "error", message: `Sign up controller error: ${error}` })
-
-        return res.status(500).send({ message: "Sever error", success: false });
-
+    if (!username || !password || !passwordConfirm) {
+      return res.status(400).json({
+        message: 'All fields are required.',
+        success: false,
+      });
     }
-}
+
+    if (password !== passwordConfirm) {
+      return res.status(400).json({
+        message: 'Admin passwords do not match.',
+        success: false,
+      });
+    }
+
+    const userExist = await checkAdminUsernameExist(username);
+
+    if (userExist) {
+      return res.status(409).json({
+        message: `Admin with username "${username}" already exists.`,
+        success: false,
+      });
+    }
+
+    const hashedPassword = await passwordHash(password);
+
+    if (typeof hashedPassword !== 'string') {
+      return res.status(500).json({
+        message: 'Server error, please try again.',
+        success: false,
+      });
+    }
+
+    const newAdmin = await addNewAdmin(username, hashedPassword);
+
+    if (!newAdmin) {
+      return res.status(500).json({
+        message: 'Server error, please try again.',
+        success: false,
+      });
+    }
+
+    const adminIdByUsername = await getAdminByUsername(username);
+
+    if (adminIdByUsername === null || adminIdByUsername === undefined) {
+      return res.status(500).json({
+        message: 'Server error, please try again.',
+        success: false,
+      });
+    }
+
+    const cookieToken = jwtTokenGen(username);
+
+    if (!cookieToken) {
+      return res.status(500).json({
+        message: 'Server error, please try again.',
+        success: false,
+      });
+    }
+
+    res.cookie(cookieName, cookieToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: ms('8h'),
+      path: '/',
+    });
+
+    return res.status(201).json({
+      message: 'Admin registered successfully.',
+      success: true,
+      username,
+      adminId: adminIdByUsername,
+    });
+  } catch (error) {
+    logger.log({
+      level: 'error',
+      message: `Sign up controller error: ${error}`,
+    });
+
+    return res.status(500).json({
+      message: 'Server error, please try again.',
+      success: false,
+    });
+  }
+};
 
 export default adminRegisterController;

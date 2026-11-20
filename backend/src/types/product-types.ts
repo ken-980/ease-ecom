@@ -29,3 +29,10 @@ export interface DashboardViewData {
     inventoryVolume: number
     inventoryValue: number
 }
+
+export interface ProcessedMediaItem {
+  url: string;
+  publicId: string;
+  type: 'IMAGE' | 'VIDEO';
+  isMain: boolean;
+}
