@@ -17,7 +17,7 @@ export const Inventory = () => {
         className="flex items-center space-x-6 border-b border-brand-border mb-6"
       >
         <NavLink to="." end className={getTabClassName}>
-          All Products
+          Home
         </NavLink>
 
         <NavLink to="add-product" className={getTabClassName}>
@@ -26,7 +26,11 @@ export const Inventory = () => {
 
 
         <NavLink to={`edit-product/:productId`} className={getTabClassName}>
-            Edit product
+            Edit Product
+        </NavLink>
+
+        <NavLink to={`product-info`} className={getTabClassName}>
+          Product Information
         </NavLink>
       </nav>
 

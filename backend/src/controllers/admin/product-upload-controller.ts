@@ -4,6 +4,8 @@ import { v2 as cloudinary } from 'cloudinary';
 import DOMPurify from 'isomorphic-dompurify';
 import { prismaClientInstance } from './../../db/prismaClient';
 import type { ProcessedMediaItem } from '../../middleware/admin/product-upload-middleware';
+import { redisClient } from '../../configs/redis-config';
+import { INVENTORY_OVERVIEW_CACHE_KEY } from './inventory-overview-controller';
 
 const cleanupUploadedMedia = async (media: ProcessedMediaItem[]) => {
   if (media.length === 0) return;
@@ -121,6 +123,11 @@ export const productUploaderController = async (req: Request, res: Response) => 
         media: true,
       },
     });
+
+    // invalidate cache before sending response
+    if (redisClient?.isOpen) {
+      await redisClient.del(INVENTORY_OVERVIEW_CACHE_KEY).catch(() => {});
+    }
 
     return res.status(201).json({
       success: true,

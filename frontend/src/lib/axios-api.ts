@@ -1,5 +1,8 @@
+
+// src/lib/axios-api.ts
 import axios from 'axios';
 import { baseUrl } from '../configs';
+import { showAlert } from './alert-store';
 
 export const api = axios.create({
   baseURL: baseUrl,
@@ -8,3 +11,28 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Allow individual callers to opt out via { skipGlobalErrorAlert: true } if needed
+    if (!error.config?.skipGlobalErrorAlert) {
+      if (!error.response) {
+        showAlert({
+          variant: 'error',
+          message:
+            'Cannot reach the server. Check your connection or backend status.',
+        });
+      } else if (error.response.status >= 500) {
+        showAlert({
+          variant: 'error',
+          message:
+            error.response.data?.message ||
+            'A server error occurred while loading data.',
+        });
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
