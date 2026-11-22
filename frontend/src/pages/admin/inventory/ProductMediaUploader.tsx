@@ -66,7 +66,7 @@ export const ProductMediaUploader = ({
     input.files = dataTransfer.files;
   };
 
-  // --- 1. Main Thumbnail Handlers ---
+  // --- Main Thumbnail Handlers ---
   const handleThumbnailChange = (fileList: FileList | null) => {
     const file = fileList?.[0];
     if (!file) return;
@@ -92,7 +92,7 @@ export const ProductMediaUploader = ({
     syncFilesToInput(thumbnailInputRef.current, [file]);
   };
 
-  // --- 2. Gallery Images Handlers (Up to 6) ---
+  // --- Gallery Images Handlers (Up to 6) ---
   const addGalleryFiles = (fileList: FileList | null) => {
     if (!fileList || fileList.length === 0) return;
     setLocalError(null);
@@ -216,7 +216,7 @@ export const ProductMediaUploader = ({
         </div>
       )}
 
-      {/* ================= 1. MAIN THUMBNAIL ================= */}
+      {/* ================= MAIN THUMBNAIL ================= */}
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-medium text-ink-label">
@@ -268,7 +268,7 @@ export const ProductMediaUploader = ({
         >
           <ImagePlus className="h-6 w-6 shrink-0 text-brand" />
           <div>
-            <p className="text-xs font-medium text-ink-primary">
+            <p className="text-xs font-medium text-accent">
               Upload Main Thumbnail
             </p>
             <p className="text-[11px] text-ink-muted">
@@ -280,7 +280,7 @@ export const ProductMediaUploader = ({
     </div>
 
 
-      {/* ================= 2. GALLERY PHOTOS (UP TO 6) ================= */}
+      {/* =================  GALLERY PHOTOS (UP TO 6) ================= */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium text-ink-label">Gallery Photos</h3>
@@ -333,7 +333,7 @@ export const ProductMediaUploader = ({
           >
             <UploadCloud className="h-5 w-5 text-brand" />
             <p className="text-xs font-medium text-ink-primary">
-              Drop photos here or <span className="text-brand underline">browse</span>
+              Drop photos here or <span className="text-accent underline">browse</span>
             </p>
             <p className="text-[11px] text-ink-muted">
               Up to {MAX_GALLERY_IMAGES} photos ({MAX_IMAGE_SIZE_MB}MB each)

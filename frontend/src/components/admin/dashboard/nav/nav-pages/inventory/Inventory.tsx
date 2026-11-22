@@ -17,7 +17,7 @@ export const Inventory = () => {
         className="flex items-center space-x-6 border-b border-brand-border mb-6"
       >
         <NavLink to="." end className={getTabClassName}>
-          All Products
+          Home
         </NavLink>
 
         <NavLink to="add-product" className={getTabClassName}>

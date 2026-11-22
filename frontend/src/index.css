@@ -3,4 +3,44 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
+
+
+@keyframes alertPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes alertPopOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(24px) scale(0.95);
+  }
+}
+
+@keyframes alertProgressShrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.animate-alert-in {
+  animation: alertPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-alert-out {
+  animation: alertPopOut 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
