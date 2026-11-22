@@ -20,6 +20,7 @@ import {
   parseProductMediaFields,
   handleCloudinaryUploads,
 } from '../middleware/admin/product-upload-middleware';
+import { getInventoryOverviewController } from '../controllers/admin/inventory-overview-controller';
 
 const upload = multer({ storage: multer.memoryStorage() });
 const adminRoutes = express.Router();
@@ -54,6 +55,8 @@ adminRoutes.post(
 );
 
 // Inventory Management
+adminRoutes.get("/inventory/overview", getInventoryOverviewController);
+
 adminRoutes.get('/recent/:productNumber', recentProductController);
 adminRoutes.get('/product/:productId', productInfoController);
 adminRoutes.post(

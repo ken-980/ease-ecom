@@ -9,7 +9,7 @@ import { ErrorPage } from './components/ErrorPage';
 import ShopHome from './components/shop-components/ShopIndex';
 import SignInForm from './components/auth/sign-in-form/SignInForm';
 import { ProductsCartCheck } from './components/shop-components/cart/product-check';
-import { shopHomeLoader } from './loaders/shop/shop-home-page-loader';
+import { shopHomeLoader } from './loaders/shop/ShopHomeLoadet';
 
 // Admin Auth Pages & Actions
 import { AdminLogin } from './components/admin/auth/AdminLogin';
@@ -28,8 +28,10 @@ import { adminHomeLoaderFunction } from './loaders/admin/admin-home-loader';
 import { adminViewDataLoaderFunction } from './loaders/admin/main-dashboard-view-loader';
 import { inventoryPageLoader } from './loaders/admin/inventory-page-loader';
 import { adminAction } from './actions/admin/dashboard-action';
-import { InventorList } from './pages/admin/inventory/InventoryList';
 import { EditProductAdmin } from './pages/admin/inventory/EditProductPage';
+import { InventoryMainPage } from './pages/admin/inventory/InventoryMainPage';
+import { InventoryOverviewSkeleton } from './components/admin/dashboard/nav/nav-pages/inventory/InventoryOverviewSkeleton';
+import { inventoryMainLoader } from './loaders/admin/admin-inventory-main-loader';
 
 export const router = createBrowserRouter([
   {
@@ -96,7 +98,9 @@ export const router = createBrowserRouter([
         {
         index: true,
         // Renders main product table/list by default when visiting /admin/:adminId/inventory
-        element: <InventorList />, 
+        element: <InventoryMainPage />, 
+        HydrateFallback: InventoryOverviewSkeleton,
+        loader: inventoryMainLoader
         },
         {
         path: 'add-product',

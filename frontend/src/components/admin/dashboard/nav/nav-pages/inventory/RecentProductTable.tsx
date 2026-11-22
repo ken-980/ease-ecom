@@ -6,7 +6,7 @@ import { TablePagination } from '../../../../../ui/TablePagination';
 
 export interface InventoryProductRow {
   id: number | string;
-  thumbnailUrl?: string;
+  thumbnailUrl?: string | null;
   productBrand: string;
   productName: string;
   productType: string;

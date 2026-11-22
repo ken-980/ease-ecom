@@ -1,25 +1,62 @@
-import { useNavigate } from 'react-router-dom';
+// src/pages/admin/inventory/InventorMainPage.tsx
+import { useEffect } from 'react';
+import {
+  useNavigate,
+  useNavigation,
+  useRevalidator,
+  useLoaderData
+} from 'react-router-dom';
+import { RefreshCw } from 'lucide-react';
 import { StatsCard } from '../../../components/ui/StatsCard';
 import { RecentProductsTable, type InventoryProductRow } from '../../../components/admin/dashboard/nav/nav-pages/inventory/RecentProductTable';
-import { MOCK_RECENT_PRODUCTS } from '../../../data/mockRecentProduct';
+import { InventoryOverviewSkeleton } from '../../../components/admin/dashboard/nav/nav-pages/inventory/InventoryOverviewSkeleton';
 import { showAlert } from '../../../lib/alert-store';
+import type {
+  InventoryStatsDTO,
+  InventorySummaryItemDTO,
+} from '../../../types/inventory';
 
-export const InventorMainPage = () => {
+export interface InventoryMainLoaderData {
+  stats: InventoryStatsDTO;
+  recentProducts: InventorySummaryItemDTO[];
+  error?: string;
+}
+
+
+
+export const InventoryMainPage = () => {
   const navigate = useNavigate();
+  const navigation = useNavigation();
+  const revalidator = useRevalidator();
+  
+  const {stats, recentProducts, error: loaderError} = useLoaderData() as InventoryMainLoaderData
 
-  const MOCK_INVENTORY_STATS = {
-    totalProducts: 42,
-    outOfStockCount: 6,
-    totalStockValuation: 48650.0, // GHC
-    activeBrandsCount: 14,
-  };
+
+  // Show global bottom-right alert if loader reported an error
+  useEffect(() => {
+    if (loaderError) {
+      showAlert({
+        variant: 'error',
+        message: loaderError,
+      });
+    }
+  }, [loaderError]);
+
+  // Display skeleton while navigating into this route or revalidating data
+  const isRouteLoading =
+    navigation.state === 'loading' &&
+    navigation.location?.pathname.endsWith('/inventory');
+
+  if (isRouteLoading || revalidator.state === 'loading') {
+    return <InventoryOverviewSkeleton />;
+  }
 
   const {
     totalProducts,
     outOfStockCount,
     totalStockValuation,
     activeBrandsCount,
-  } = MOCK_INVENTORY_STATS;
+  } = stats;
 
   const isCriticalStockAlert = outOfStockCount < 8;
 
@@ -34,12 +71,27 @@ export const InventorMainPage = () => {
   const handleDeleteProduct = (product: InventoryProductRow) => {
     showAlert({
       variant: 'caution',
-      message: `Delete requested for "${product.productName}" (wire up delete modal/action).`,
+      message: `Delete requested for "${product.productName}".`,
     });
   };
 
   return (
     <div className="h-full flex flex-col gap-4 overflow-hidden">
+      {/* Inline Retry Strip if loader failed */}
+      {loaderError && (
+        <div className="flex items-center justify-between rounded-sm border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs text-rose-800 shrink-0">
+          <span>{loaderError}</span>
+          <button
+            type="button"
+            onClick={() => revalidator.revalidate()}
+            className="inline-flex items-center gap-1.5 rounded-sm border border-rose-300 bg-white px-2.5 py-1 font-medium text-rose-700 hover:bg-rose-100 transition-colors cursor-pointer"
+          >
+            <RefreshCw className="h-3 w-3" />
+            <span>Retry</span>
+          </button>
+        </div>
+      )}
+
       {/* Four Main Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
         <StatsCard
@@ -92,7 +144,7 @@ export const InventorMainPage = () => {
 
       {/* Recently Added Products Table (Paginated by 5, capped at 20) */}
       <RecentProductsTable
-        products={MOCK_RECENT_PRODUCTS}
+        products={recentProducts}
         pageSize={5}
         onView={handleViewProduct}
         onEdit={handleEditProduct}
