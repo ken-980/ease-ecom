@@ -28,7 +28,7 @@ import { adminHomeLoaderFunction } from './loaders/admin/admin-home-loader';
 import { adminViewDataLoaderFunction } from './loaders/admin/main-dashboard-view-loader';
 import { inventoryPageLoader } from './loaders/admin/inventory-page-loader';
 import { adminAction } from './actions/admin/dashboard-action';
-import { InventorMainPage } from './pages/admin/inventory/InventoryMainPage';
+import { InventorList } from './pages/admin/inventory/InventoryList';
 import { EditProductAdmin } from './pages/admin/inventory/EditProductPage';
 
 export const router = createBrowserRouter([
@@ -96,7 +96,7 @@ export const router = createBrowserRouter([
         {
         index: true,
         // Renders main product table/list by default when visiting /admin/:adminId/inventory
-        element: <InventorMainPage />, 
+        element: <InventorList />, 
         },
         {
         path: 'add-product',
