@@ -1,8 +1,8 @@
 // src/middleware/admin/product-upload-middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import multer from 'multer';
-import { v2 as cloudinary } from 'cloudinary';
 import { uploadeMedia, streamUpload } from '../../helpers/multer-upload-helper';
+import { cloudinary } from '../../configs/cloudinary-config';
 
 export interface ProcessedMediaItem {
   url: string;
@@ -16,6 +16,7 @@ const rawFieldsParser = uploadeMedia.fields([
   { name: 'galleryImages', maxCount: 6 },
   { name: 'videos', maxCount: 2 },
 ]);
+
 
 // Parse multipart fields & catch Multer size/count errors cleanly
 export const parseProductMediaFields = (
@@ -55,68 +56,64 @@ export const parseProductMediaFields = (
 };
 
 // Upload parsed buffers concurrently to Cloudinary (with rollback if any single upload fails)
-export const handleCloudinaryUploads = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const uploadedPublicIds: Array<{ publicId: string; type: 'IMAGE' | 'VIDEO' }> = [];
+export const handleCloudinaryUploads =
+  (options: { requireThumbnail: boolean }) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const uploadedPublicIds: Array<{ publicId: string; type: 'IMAGE' | 'VIDEO' }> = [];
 
-  try {
-    const files = req.files as
-      | { [fieldname: string]: Express.Multer.File[] }
-      | undefined;
+    try {
+      const files = req.files as
+        | { [fieldname: string]: Express.Multer.File[] }
+        | undefined;
 
-    const thumbnailFile = files?.thumbnail?.[0];
-    const galleryFiles = files?.galleryImages ?? [];
-    const videoFiles = files?.videos ?? [];
+      const thumbnailFile = files?.thumbnail?.[0];
+      const galleryFiles = files?.galleryImages ?? [];
+      const videoFiles = files?.videos ?? [];
 
-    if (!thumbnailFile) {
-      return res.status(400).json({
+      if (options.requireThumbnail && !thumbnailFile) {
+        return res.status(400).json({
+          success: false,
+          message: 'Main product thumbnail is required.',
+        });
+      }
+
+      const uploadSingle = async (
+        file: Express.Multer.File,
+        type: 'IMAGE' | 'VIDEO',
+        isMain: boolean
+      ): Promise<ProcessedMediaItem> => {
+        const result = await streamUpload(file.buffer, 'ecommerce_products');
+        uploadedPublicIds.push({ publicId: result.public_id, type });
+        return {
+          url: result.secure_url,
+          publicId: result.public_id,
+          type,
+          isMain,
+        };
+      };
+
+      const tasks: Promise<ProcessedMediaItem>[] = [
+        ...(thumbnailFile ? [uploadSingle(thumbnailFile, 'IMAGE', true)] : []),
+        ...galleryFiles.map((file) => uploadSingle(file, 'IMAGE', false)),
+        ...videoFiles.map((file) => uploadSingle(file, 'VIDEO', false)),
+      ];
+
+      req.body.processedMedia = await Promise.all(tasks);
+      return next();
+    } catch (error) {
+      if (uploadedPublicIds.length > 0) {
+        await Promise.allSettled(
+          uploadedPublicIds.map((item) =>
+            cloudinary.uploader.destroy(item.publicId, {
+              resource_type: item.type === 'VIDEO' ? 'video' : 'image',
+            })
+          )
+        );
+      }
+
+      return res.status(500).json({
         success: false,
-        message: 'Main product thumbnail is required.',
+        message: (error as Error).message || 'Failed to upload media to Cloudinary.',
       });
     }
-
-    // Track every completed upload immediately so partial failures can be cleaned up
-    const uploadSingle = async (
-      file: Express.Multer.File,
-      type: 'IMAGE' | 'VIDEO',
-      isMain: boolean
-    ): Promise<ProcessedMediaItem> => {
-      const result = await streamUpload(file.buffer, 'ecommerce_products');
-      uploadedPublicIds.push({ publicId: result.public_id, type });
-      return {
-        url: result.secure_url,
-        publicId: result.public_id,
-        type,
-        isMain,
-      };
-    };
-
-    const tasks: Promise<ProcessedMediaItem>[] = [
-      uploadSingle(thumbnailFile, 'IMAGE', true),
-      ...galleryFiles.map((file) => uploadSingle(file, 'IMAGE', false)),
-      ...videoFiles.map((file) => uploadSingle(file, 'VIDEO', false)),
-    ];
-
-    req.body.processedMedia = await Promise.all(tasks);
-    return next();
-  } catch (error) {
-    // Clean up any files that succeeded before another file failed
-    if (uploadedPublicIds.length > 0) {
-      await Promise.allSettled(
-        uploadedPublicIds.map((item) =>
-          cloudinary.uploader.destroy(item.publicId, {
-            resource_type: item.type === 'VIDEO' ? 'video' : 'image',
-          })
-        )
-      );
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: (error as Error).message || 'Failed to upload media to Cloudinary.',
-    });
-  }
-};
+  };

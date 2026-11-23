@@ -1,8 +1,16 @@
-
 // src/lib/axios-api.ts
 import axios from 'axios';
 import { baseUrl } from '../configs';
 import { showAlert } from './alert-store';
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    skipGlobalErrorAlert?: boolean;
+  }
+  export interface InternalAxiosRequestConfig {
+    skipGlobalErrorAlert?: boolean;
+  }
+}
 
 export const api = axios.create({
   baseURL: baseUrl,
@@ -15,7 +23,6 @@ export const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Allow individual callers to opt out via { skipGlobalErrorAlert: true } if needed
     if (!error.config?.skipGlobalErrorAlert) {
       if (!error.response) {
         showAlert({

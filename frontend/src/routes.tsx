@@ -9,7 +9,7 @@ import { ErrorPage } from './components/ErrorPage';
 import ShopHome from './components/shop-components/ShopIndex';
 import SignInForm from './components/auth/sign-in-form/SignInForm';
 import { ProductsCartCheck } from './components/shop-components/cart/product-check';
-import { shopHomeLoader } from './loaders/shop/ShopHomeLoadet';
+import { shopHomeLoader } from './loaders/shop/shop-home-loader';
 
 // Admin Auth Pages & Actions
 import { AdminLogin } from './components/admin/auth/AdminLogin';
@@ -27,11 +27,16 @@ import { TaskPage } from './components/admin/dashboard/nav/nav-pages/TaskPage';
 import { adminHomeLoaderFunction } from './loaders/admin/admin-home-loader';
 import { adminViewDataLoaderFunction } from './loaders/admin/main-dashboard-view-loader';
 import { inventoryPageLoader } from './loaders/admin/inventory-page-loader';
+
+
 import { adminAction } from './actions/admin/dashboard-action';
-import { EditProductAdmin } from './pages/admin/inventory/EditProductPage';
+import { EditProductPage } from './pages/admin/inventory/EditProductPage';
 import { InventoryMainPage } from './pages/admin/inventory/InventoryMainPage';
 import { InventoryOverviewSkeleton } from './components/admin/dashboard/nav/nav-pages/inventory/InventoryOverviewSkeleton';
 import { inventoryMainLoader } from './loaders/admin/admin-inventory-main-loader';
+import { editProductPageLoader } from './loaders/admin/edit-product-loader';
+import { editProductPageActionFunction } from './actions/admin/edit-product-action';
+import { EditProductSkeleton } from './components/admin/inventory/EditProductSkeleton';
 
 export const router = createBrowserRouter([
   {
@@ -109,9 +114,10 @@ export const router = createBrowserRouter([
         },
         {
         path: 'edit-product/:productId',
-        element: <EditProductAdmin />,
-        // loader: editProductPageLoader,
-        // action: editProductAction,
+        element: <EditProductPage />,
+        loader: editProductPageLoader,
+        action: editProductPageActionFunction,
+        hydrateFallbackElement: <EditProductSkeleton />
         },
     ],
     },
