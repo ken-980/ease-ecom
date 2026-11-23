@@ -1,6 +1,5 @@
 // src/routes/adminRoutes.ts
 import express from 'express';
-import multer from 'multer';
 
 import signInController from '../controllers/admin/signin-controller';
 import adminRegisterController from '../controllers/admin/signup-controller';
@@ -11,18 +10,19 @@ import adminDetail from '../controllers/admin/admin-detail';
 import { productUploaderController } from '../controllers/admin/product-upload-controller';
 import { recentProductController } from '../controllers/admin/inventory-page-controller';
 import { deleteRecordController } from '../controllers/admin/delete-record-controller';
-import { productInfoController } from '../controllers/admin/product-info-controller';
-import { editProductCrontroller } from '../controllers/admin/edit-product-controller';
+import {
+  getProductDetailController,
+  updateProductController,
+} from '../controllers/admin/edit-product-controller';
 import { dashboardViewDataController } from '../controllers/admin/dashboard-view-data-controller';
+import { getInventoryOverviewController } from '../controllers/admin/inventory-overview-controller';
 
 import { verifyAdminAuth } from '../middleware/admin/verifyAdminAuth';
 import {
   parseProductMediaFields,
   handleCloudinaryUploads,
 } from '../middleware/admin/product-upload-middleware';
-import { getInventoryOverviewController } from '../controllers/admin/inventory-overview-controller';
 
-const upload = multer({ storage: multer.memoryStorage() });
 const adminRoutes = express.Router();
 
 // ==========================================
@@ -50,20 +50,24 @@ adminRoutes.get('/dashboardViewData', dashboardViewDataController);
 adminRoutes.post(
   '/products',
   parseProductMediaFields,
-  handleCloudinaryUploads,
+  handleCloudinaryUploads ({requireThumbnail: true}),
   productUploaderController
 );
 
 // Inventory Management
-adminRoutes.get("/inventory/overview", getInventoryOverviewController);
-
+adminRoutes.get('/inventory/overview', getInventoryOverviewController);
 adminRoutes.get('/recent/:productNumber', recentProductController);
-adminRoutes.get('/product/:productId', productInfoController);
-adminRoutes.post(
-  '/edit-product',
-  upload.array('newImages', 10),
-  editProductCrontroller
+
+// Product Detail & Editing (Aligned with editProductLoader & editProductAction)
+adminRoutes.get('/products/:productId', getProductDetailController);
+adminRoutes.patch(
+  '/products/:productId',
+  parseProductMediaFields,
+  handleCloudinaryUploads({requireThumbnail: false}),
+  updateProductController
 );
+
+// Legacy alias (keep only if an older view page still calls /admin/product/:productId)
 adminRoutes.delete('/del', deleteRecordController);
 
 export default adminRoutes;

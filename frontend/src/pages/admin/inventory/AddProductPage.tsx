@@ -9,8 +9,12 @@ import { TARGET_GENDERS } from '../../../constants/productOptions';
 import { PRODUCT_FORM_FIELDS } from '../../../constants/productFields';
 import { ProductMediaUploader } from './ProductMediaUploader';
 
+
 export interface ProductActionData {
+  success?: boolean;
+  message?: string;
   error?: string;
+  submittedAt?: number;
   fieldErrors?: Partial<Record<keyof typeof PRODUCT_FORM_FIELDS | 'media', string>>;
 }
 

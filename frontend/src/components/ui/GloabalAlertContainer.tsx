@@ -90,7 +90,7 @@ const AlertToast = ({ alert }: AlertToastProps) => {
       aria-live={alert.variant === 'error' ? 'assertive' : 'polite'}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className={`pointer-events-auto relative overflow-hidden w-88 max-w-[calc(100vw-2rem)] rounded-xl border p-3.5 shadow-lg backdrop-blur-md transition-all duration-300 font-plus-font ${container} ${
+      className={`pointer-events-auto relative overflow-hidden w-88 max-w-[calc(100vw-2rem)] rounded-sm border p-3.5 shadow-lg backdrop-blur-md transition-all duration-300 font-plus-font ${container} ${
         isClosing ? 'animate-alert-out' : 'animate-alert-in'
       }`}
     >

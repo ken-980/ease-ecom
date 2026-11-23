@@ -52,3 +52,27 @@ export interface ProductDetailDTO extends InventorySummaryItemDTO {
   adminUsername: string;
   media: ProductMediaDTO[];
 }
+
+export interface EditProductLoaderData {
+  product: ProductDetailDTO | null;
+  error?: string;
+}
+
+export interface EditProductActionData {
+  success?: boolean;
+  message?: string;
+  error?: string;
+  submittedAt?: number;
+  fieldErrors?: Partial<
+    Record<
+      | 'productBrand'
+      | 'productName'
+      | 'productType'
+      | 'productGenderUse'
+      | 'productPrice'
+      | 'productQuantity'
+      | 'media',
+      string
+    >
+  >;
+}

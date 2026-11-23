@@ -1,63 +1,58 @@
-
-import  { AxiosError } from "axios";
+// src/loaders/admin/edit-product-loader.ts
+import { LoaderFunction } from "react-router-dom";
+import { isAxiosError } from "axios";
 import { api } from "../../lib/axios-api";
-import { LoaderFunction } from "react-router";
-import { EditProductInfo, ProductDbInfo } from "../../types/products-types";
+import { showAlert } from "../../lib/alert-store";
+import type { ProductDetailDTO } from "../../types/inventory";
 
-
-export const editProdcutPageLoader : LoaderFunction = async ({ params }) => {
- 
-    try {
-
-
-        const productId = params?.productId;
-
-        //get recent items, total products, total products
-        const axios_req = await api({
-            method : "get",
-            url : `admin/product/${productId}`,
-            withCredentials : true
-        })
-
-        if(axios_req.status !== 200){
-            return null;
-        }
-
-        if(typeof axios_req.data?.details === 'object'){
-            
-            const product_details : ProductDbInfo  = {
-                productGenderUse : axios_req.data?.details.productGenderUse,
-                productName : axios_req.data?.details.productName,
-                productPrice : axios_req.data?.details.productPrice,
-                productQuantity : axios_req.data?.details.productQuantity,
-                createdAt : axios_req.data?.details.createdAt,
-                updatedAt : axios_req.data?.details.updatedAt,
-                id : axios_req.data?.details.id,
-                adminUsername : axios_req.data?.details.adminUsername,
-                productType : axios_req.data?.details.productType
-            };
-
-            const images : string[] = [];
-            const imageJson = JSON.parse(axios_req.data?.details.productFilePath);
-
-            if(Array.isArray(imageJson)){
-                imageJson.map((url) => {
-                    images.push(url?.imageUrl)
-                })
-            }
-
-            const d : EditProductInfo = { productDetail : product_details, productImages : images }
-            return d;
-        
-        }
-
-        // return data;
-        return null
-        
-    } catch (error) {
-        if(error instanceof AxiosError){
-            console.log(error.response)
-        }
-        return null;
-    }
+export interface ProductDetailResponse {
+  success: boolean;
+  product: ProductDetailDTO;
 }
+
+export interface EditProductLoaderData {
+  product: ProductDetailDTO | null;
+  error?: string;
+}
+
+export const editProductPageLoader: LoaderFunction = async ({
+  params,
+}): Promise<EditProductLoaderData> => {
+  const productId = params.productId;
+
+  if (!productId) {
+    const message = "Product ID is missing from the route.";
+    showAlert({ variant: "error", message });
+    return { product: null, error: message };
+  }
+
+  try {
+
+    const { data } = await api.get<ProductDetailResponse>(
+      `/admin/products/${encodeURIComponent(productId)}`,
+      { skipGlobalErrorAlert: true },
+    );
+
+    return {
+      product: data.product,
+    };
+  } catch (error) {
+    let message = "Failed to load product details.";
+
+    if (isAxiosError<{ message?: string }>(error)) {
+      if (!error.response) {
+        message =
+          "Cannot reach the server. Check your connection or backend status.";
+      } else if (error.response.status === 404) {
+        message = "This product could not be found. It may have been deleted.";
+      } else {
+        message =
+          error.response.data?.message ||
+          `Server error (${error.response.status}) while loading product.`;
+      }
+    }
+
+    showAlert({ variant: "error", message });
+    return { product: null, error: message };
+  }
+};
